@@ -123,13 +123,13 @@ input[type="range"]::-moz-range-thumb{width:30px;height:30px;background:var(--ac
 .wig-row{display:flex;align-items:center;gap:14px;padding:10px 14px;background:var(--soft);
   border-radius:8px;margin-bottom:6px;font-size:16px;font-variant-numeric:tabular-nums}
 .wig-label{font-weight:600;min-width:84px;color:var(--text);font-size:15px}
-.wig-track{position:relative;flex:1;height:24px;background:rgba(0,0,0,0.05);
-  border-radius:12px;max-width:200px;overflow:hidden}
-.wig-dot{position:absolute;top:50%;left:50%;width:14px;height:14px;
+.wig-track{position:relative;flex:1;height:40px;background:rgba(0,0,0,0.05);
+  border-radius:6px;max-width:140px;overflow:hidden}
+.wig-dot{position:absolute;top:0;left:0;width:12px;height:12px;
   background:var(--accent);border-radius:50%;will-change:transform;
-  transform:translate(-50%,-50%);box-shadow:0 1px 3px rgba(0,0,0,0.18)}
+  box-shadow:0 1px 2px rgba(0,0,0,0.18)}
 .wig-val{font-size:22px;font-weight:700;color:var(--accent);
-  min-width:42px;text-align:center;font-variant-numeric:tabular-nums}
+  min-width:60px;text-align:center;font-variant-numeric:tabular-nums}
 .wig-bar{width:90px;flex-shrink:0;height:8px;background:rgba(0,0,0,0.08);
   border-radius:4px;overflow:hidden}
 .wig-fill{height:100%;background:var(--accent);border-radius:4px;width:0%;
@@ -139,15 +139,26 @@ input[type="range"]::-moz-range-thumb{width:30px;height:30px;background:var(--ac
 .wig-avg .wig-label{color:#0a6e51;text-transform:uppercase;letter-spacing:.06em;font-size:13px}
 .wig-avg .wig-dot,.wig-avg .wig-fill{background:var(--good)}
 .wig-avg .wig-val{color:var(--good)}
+.wig-head{display:flex;align-items:center;gap:14px;padding:0 14px;margin-bottom:6px;
+  font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700}
+.wig-h-spacer{min-width:84px}
+.wig-h-track{flex:1;max-width:140px;text-align:center}
+.wig-h-val{min-width:60px;text-align:center}
+.wig-h-bar{width:90px}
 .sum-line{font-size:18px;font-weight:600;text-align:center;margin:14px 0;
   padding:14px;background:var(--accent-soft);border-radius:10px;color:var(--accent-deep)}
 @media (max-width:520px){
   .wig-row{gap:10px;padding:8px 10px}
   .wig-label{min-width:62px;font-size:13px}
-  .wig-track{max-width:120px;height:22px}
-  .wig-dot{width:12px;height:12px}
-  .wig-val{font-size:18px;min-width:30px}
+  .wig-track{max-width:110px;height:34px}
+  .wig-dot{width:11px;height:11px}
+  .wig-val{font-size:18px;min-width:42px}
   .wig-bar{width:60px}
+  .wig-head{gap:10px;padding:0 10px;font-size:10px}
+  .wig-h-spacer{min-width:62px}
+  .wig-h-track{max-width:110px}
+  .wig-h-val{min-width:42px}
+  .wig-h-bar{width:60px}
 }
 
 .tour-layout{display:grid;grid-template-columns:auto 1fr;gap:18px}
@@ -460,7 +471,14 @@ input[type="range"]::-moz-range-thumb{width:30px;height:30px;background:var(--ac
     <div class="ch-num">Chapter 10 — taking the average</div>
     <h2 class="ch-title">One number for the whole crowd. Add them all up. Divide by how many.</h2>
     <div class="ch-body">
-      <p>Each particle is moving in some direction, but directions cancel out when you add them up — so what we average is how energetically each one is moving, regardless of where it's pointed. Here are 5 particles, each with its own wiggle level — a number from 1 to 10. Watch them: a higher number means more back-and-forths per second.</p>
+      <p>Every particle is constantly moving — never still, bouncing in some direction (left, right, up, diagonal). Across many particles those directions cancel when you add them up, so <em>which way</em> a particle is heading can't be what temperature is. What we <em>can</em> average is <em>how much</em> motion each one has, regardless of direction.</p>
+      <p>We'll call that single number a particle's <strong>wiggle</strong> — its energy of motion. Bigger wiggle = faster, more vigorous bouncing. Here are 5 particles, each in its own little box at its own wiggle level (a number from 1 to 10):</p>
+    </div>
+    <div class="wig-head">
+      <div class="wig-h-spacer"></div>
+      <div class="wig-h-track">motion</div>
+      <div class="wig-h-val">wiggle</div>
+      <div class="wig-h-bar"></div>
     </div>
     <div id="avg-particles">
       <div class="wig-row" data-i="0"><div class="wig-label">Particle 1</div><div class="wig-track"><div class="wig-dot"></div></div><strong class="wig-val">3</strong><div class="wig-bar"><div class="wig-fill"></div></div></div>
@@ -471,7 +489,7 @@ input[type="range"]::-moz-range-thumb{width:30px;height:30px;background:var(--ac
     </div>
     <div class="sum-line">
       <strong>Add them up:</strong> 3 + 5 + 2 + 7 + 3 = <strong>20</strong><br>
-      <strong>Divide by 5:</strong> 20 ÷ 5 = <strong style="font-size:24px">4.0</strong> ← this is the average wiggle. <em>This is the temperature.</em>
+      <strong>Divide by 5:</strong> 20 ÷ 5 = <strong style="font-size:24px">4.0</strong> ← the average wiggle. <em>This is the temperature.</em>
     </div>
     <div class="wig-row wig-avg" data-i="avg"><div class="wig-label">Average</div><div class="wig-track"><div class="wig-dot"></div></div><strong class="wig-val">4.0</strong><div class="wig-bar"><div class="wig-fill"></div></div></div>
     <div class="control-row">
@@ -480,7 +498,7 @@ input[type="range"]::-moz-range-thumb{width:30px;height:30px;background:var(--ac
       <label>hotter</label>
     </div>
     <div class="ch-body">
-      <p>Drag the slider. Every particle's wiggle goes up. The green average particle climbs along with them. <strong>That climbing average is what a thermometer reads.</strong></p>
+      <p>Drag the slider. Every particle's wiggle goes up — they all bounce harder, and the green Average climbs with them. <strong>That climbing average is what a thermometer reads.</strong></p>
       <p>Mercury doesn't measure individual atoms — there are billions of billions of them. It measures the <em>collective effect</em> of their average wiggle: the column rising. That's the trick.</p>
     </div>
   </section>
@@ -1160,7 +1178,7 @@ setupCallbacks[8] = () => {
   cleanupCallbacks[8] = () => { if (connBox) { connBox.destroy(); connBox = null; } };
 };
 
-// CH 10 — taking the average (animated wiggling particles + average particle)
+// CH 10 — taking the average (one 2D mini-box per particle, plus an Average row)
 let avgRafId = null;
 setupCallbacks[9] = () => {
   const slider = freshen('#avg-slider');
@@ -1170,17 +1188,25 @@ setupCallbacks[9] = () => {
   const avgRow = $('.wig-row.wig-avg');
   const allRows = [...particleRows, avgRow];
 
-  // Per-row animation state: current wiggle level and accumulated phase
-  const state = allRows.map(() => ({ wiggle: 1, phase: Math.random() * Math.PI * 2 }));
+  const DOT_R = 6;            // half of the 12px dot
+  const SPEED_PER_WIGGLE = 14; // px per second per wiggle unit (linear)
+
+  // Per-row physics state: position (px, in track-local coords), unit-vector velocity, wiggle
+  const state = allRows.map(() => {
+    const angle = Math.random() * Math.PI * 2;
+    return {
+      wiggle: 1,
+      x: null, y: null, // initialized on first frame once track size is known
+      ux: Math.cos(angle), uy: Math.sin(angle),
+    };
+  });
 
   function update() {
     const factor = 0.5 + parseInt(slider.value) / 50;
     const vals = baseValues.map(v => Math.max(1, Math.round(v * factor)));
     const sum = vals.reduce((a, b) => a + b, 0);
     const avg = sum / vals.length;
-
-    // Bar normalization: tallest bar (max wiggle in the set) is 100%
-    const maxV = Math.max(...vals, avg);
+    const maxV = Math.max(...vals, avg); // bar of the fastest particle = 100%
 
     vals.forEach((v, i) => {
       state[i].wiggle = v;
@@ -1195,21 +1221,41 @@ setupCallbacks[9] = () => {
       `<strong>Divide by 5:</strong> ${sum} ÷ 5 = <strong style="font-size:24px">${avg.toFixed(1)}</strong> ← average wiggle = temperature`;
   }
 
-  // Animation loop: phase accumulates so a freq change doesn't snap the dot's position
   let lastT = null;
   function animate(now) {
     const dt = lastT === null ? 0 : Math.min((now - lastT) / 1000, 0.1);
     lastT = now;
+
     allRows.forEach((row, i) => {
       const dot = row.querySelector('.wig-dot');
       const track = dot.parentElement;
       const trackW = track.clientWidth;
-      if (trackW <= 14) return; // track not laid out yet; skip this row this frame
-      // wiggle level = back-and-forths per second; one full cycle = 2π in phase
-      state[i].phase += 2 * Math.PI * state[i].wiggle * 0.6 * dt;
-      const amplitude = (trackW - 14) / 2 - 2;
-      const x = Math.sin(state[i].phase) * amplitude;
-      dot.style.transform = `translate(calc(-50% + ${x}px), -50%)`;
+      const trackH = track.clientHeight;
+      if (trackW <= DOT_R*2 || trackH <= DOT_R*2) return; // not laid out yet
+
+      const minX = DOT_R, maxX = trackW - DOT_R;
+      const minY = DOT_R, maxY = trackH - DOT_R;
+
+      if (state[i].x === null) {
+        state[i].x = minX + Math.random() * (maxX - minX);
+        state[i].y = minY + Math.random() * (maxY - minY);
+      }
+
+      const speed = state[i].wiggle * SPEED_PER_WIGGLE;
+      let nx = state[i].x + state[i].ux * speed * dt;
+      let ny = state[i].y + state[i].uy * speed * dt;
+
+      // Reflect off walls (hard-sphere model, walls only — same as WiggleBox)
+      if (nx < minX) { nx = minX; state[i].ux =  Math.abs(state[i].ux); }
+      if (nx > maxX) { nx = maxX; state[i].ux = -Math.abs(state[i].ux); }
+      if (ny < minY) { ny = minY; state[i].uy =  Math.abs(state[i].uy); }
+      if (ny > maxY) { ny = maxY; state[i].uy = -Math.abs(state[i].uy); }
+
+      state[i].x = nx;
+      state[i].y = ny;
+
+      // Position the dot by its top-left corner (center is at (nx, ny))
+      dot.style.transform = `translate(${nx - DOT_R}px, ${ny - DOT_R}px)`;
     });
     avgRafId = requestAnimationFrame(animate);
   }

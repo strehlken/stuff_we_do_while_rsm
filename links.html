@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Further reading — kindred explorable explanations</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='3' y='10' width='14' height='12' rx='6' fill='none' stroke='%23534AB7' stroke-width='3'/%3E%3Crect x='15' y='10' width='14' height='12' rx='6' fill='none' stroke='%23E24B4A' stroke-width='3'/%3E%3C/svg%3E">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  background:#FAF7EF;color:#1A1A1A;font-size:18px;line-height:1.65;
+  min-height:100vh;padding:48px 18px 80px}
+.app{max-width:760px;margin:0 auto}
+.back{display:inline-block;font-size:15px;color:#534AB7;text-decoration:none;margin-bottom:18px}
+.back:hover{text-decoration:underline}
+header{margin-bottom:36px}
+h1{font-size:36px;font-weight:700;letter-spacing:-0.015em;margin-bottom:8px;line-height:1.15}
+.subtitle{font-size:17px;color:#5F5E5A;max-width:60ch}
+
+section{margin-bottom:36px}
+section h2{font-size:14px;font-weight:700;color:#5F5E5A;text-transform:uppercase;
+  letter-spacing:.08em;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid rgba(0,0,0,0.10)}
+
+.entry{margin-bottom:18px}
+.entry .title{font-size:18px;font-weight:700;color:#1A1A1A;line-height:1.35}
+.entry .title a{color:#534AB7;text-decoration:none}
+.entry .title a:hover{text-decoration:underline}
+.entry .author{font-size:15px;color:#5F5E5A;font-style:italic;margin-left:4px}
+.entry .desc{font-size:16px;color:#1A1A1A;line-height:1.55;margin-top:4px}
+.entry .desc em{color:#3C3489;font-style:italic}
+
+.starred{background:#EEEDFE;border:1px solid #534AB7;border-radius:14px;padding:18px 20px;margin-bottom:24px}
+.starred .badge{display:inline-block;background:#534AB7;color:white;font-size:11px;font-weight:700;
+  padding:3px 10px;border-radius:99px;letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px}
+.starred .title{font-size:20px}
+.starred .desc{margin-top:6px}
+
+.coda{background:#FFFFFF;border:1px solid rgba(0,0,0,0.10);border-radius:14px;
+  padding:18px 22px;margin-top:32px;font-size:16.5px;color:#1A1A1A;line-height:1.6}
+.coda strong{color:#534AB7}
+
+footer{margin-top:48px;font-size:14px;color:#5F5E5A;text-align:center}
+footer a{color:#534AB7;text-decoration:none}
+footer a:hover{text-decoration:underline}
+
+@media (max-width:520px){
+  body{padding:28px 16px 60px}
+  h1{font-size:28px}
+  .entry .title{font-size:16.5px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <a href="index.html" class="back">← Back to home</a>
+
+  <header>
+    <h1>Further reading</h1>
+    <p class="subtitle">Kindred explorable explanations and the lineage they come from. The sibling project worth studying first, the canonical design references, and the curricula that share the conceptual scaffolding behind <a href="temperature.html" style="color:#534AB7">What is temperature?</a></p>
+  </header>
+
+  <div class="starred">
+    <div class="badge">Start here</div>
+    <div class="title"><a href="https://pontus.granstrom.me">Many Tiny Things</a> <span class="author">— Pontus Granström</span></div>
+    <div class="desc">A series of explorables explicitly about how macroscopic phenomena emerge from simple microscopic particles — the same pedagogical bet Chapter 9 makes. The companion 2016 Chalmers master's thesis, <em>Explorable Explanations on Statistical Physics</em>, is worth reading for the design rationale; it cites and builds on the Bret Victor / Nicky Case tradition. The closest peer project, and the single thing to study most carefully.</div>
+  </div>
+
+  <section>
+    <h2>The canon — explorable-explanation design</h2>
+
+    <div class="entry">
+      <div class="title"><a href="https://worrydream.com">Bret Victor — worrydream.com</a></div>
+      <div class="desc"><em>Up and Down the Ladder of Abstraction</em> (and the other essays here) defined the genre this site belongs to: scrub-bar interactivity, multiple linked representations, and trusting the reader to discover patterns. Reads like the design spec for what's already here.</div>
+    </div>
+
+    <div class="entry">
+      <div class="title"><a href="https://explorabl.es">Explorable Explanations — explorabl.es</a> <span class="author">— curated by Nicky Case</span></div>
+      <div class="desc">The curated index of the form. The <em>Physics</em> tag in particular is a goldmine. Nicky Case's own work — <em>Parable of the Polygons</em> (with Vi Hart) and <em>Fireflies</em> — sets the gold standard for "one tight pedagogical idea, made inevitable through interaction."</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>For the kinetic-theory chapters (8–11)</h2>
+
+    <div class="entry">
+      <div class="title"><a href="https://phet.colorado.edu">PhET Interactive Simulations — phet.colorado.edu</a> <span class="author">— University of Colorado</span></div>
+      <div class="desc"><em>States of Matter: Basics</em> and <em>Gas Properties</em> are the most-used, most-evaluated interactive physics simulations in the world. They cover exactly the molecular-wiggle picture, with real molecular dynamics under the hood — pump in heat, watch a phase change emerge. They lack the narrative spine here, but they're the empirical benchmark for "does this teaching work?"</div>
+    </div>
+
+    <div class="entry">
+      <div class="title"><a href="https://falstad.com/mathphysics.html">Falstad applets — falstad.com/mathphysics.html</a></div>
+      <div class="desc">The thermodynamics and molecular-dynamics applets in particular. Less polished than PhET, more flexible — and great for the bonus chapter's "five different physical tricks" framing.</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Same conceptual moves, different topics</h2>
+
+    <div class="entry">
+      <div class="title">To Build a Better Ballot <span class="author">— Lee Byron &amp; Nicky Case</span></div>
+      <div class="desc">Voting systems made tactile. Same family of techniques applied to a totally different problem.</div>
+    </div>
+
+    <div class="entry">
+      <div class="title">Earth Primer <span class="author">— Chaim Gingold (iPad)</span></div>
+      <div class="desc">Geology as a sandbox. The closest analogue to the "drag the slider, watch the system" aesthetic of these pages.</div>
+    </div>
+
+    <div class="entry">
+      <div class="title"><a href="https://distill.pub">Distill — distill.pub</a></div>
+      <div class="desc">Adopted the explorable form for technical machine-learning research. Proof that the genre scales beyond pedagogy into primary research communication.</div>
+    </div>
+
+    <div class="entry">
+      <div class="title">3Blue1Brown <span class="author">— Grant Sanderson</span></div>
+      <div class="desc">Interactive math videos. Outside the strict explorable canon, but in the same lineage.</div>
+    </div>
+
+    <div class="entry">
+      <div class="title">Matt Henderson — simulations on Twitter / X</div>
+      <div class="desc">Short-form physical and geometric simulations. A different tempo, but the same trust in animation as explanation.</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Heat &amp; temperature pedagogy (text and curriculum)</h2>
+
+    <div class="entry">
+      <div class="title">The Feynman Lectures on Physics, Vol. I <span class="author">— Chapters 1 and 39–46</span></div>
+      <div class="desc">The "bouncing ball" aside in Chapter 9 of this site is a direct descendant. Feynman is the conceptual ancestor of the whole "heat is just hidden motion" framing.</div>
+    </div>
+
+    <div class="entry">
+      <div class="title"><a href="https://acs.org/middleschoolchemistry">American Chemical Society — Heat, Temperature, and Conduction</a></div>
+      <div class="desc">A middle-school chemistry unit at acs.org/middleschoolchemistry. Lacks the interactive depth but nails the conceptual scaffolding — every demo earns its place.</div>
+    </div>
+
+    <div class="entry">
+      <div class="title">Eugenia Etkina — ISLE physics curriculum</div>
+      <div class="desc">Investigative Science Learning Environment. Uses the same "notice a clue → build a measurement → explain the mechanism" arc this site does. The pedagogical theory underneath.</div>
+    </div>
+  </section>
+
+  <div class="coda">
+    <strong>If you only read one:</strong> Granström's <em>Many Tiny Things</em>, with the thesis open alongside. It's the only project that targets statistical-physics intuition in this exact form, and reading it as a peer will probably yield the most useful design feedback for the next chapters here.
+  </div>
+
+  <footer>
+    <a href="index.html">Home</a> &middot; <a href="temperature.html">Temperature</a> &middot; <a href="pie_game.html">Pie Lab</a>
+  </footer>
+</div>
+</body>
+</html>

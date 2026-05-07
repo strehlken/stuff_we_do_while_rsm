@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What is temperature?</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='12' y='3' width='8' height='22' rx='4' fill='%23FFFFFF' stroke='%231A1A1A' stroke-width='1.5'/%3E%3Ccircle cx='16' cy='25' r='5.5' fill='%23FFFFFF' stroke='%231A1A1A' stroke-width='1.5'/%3E%3Crect x='14' y='11' width='4' height='14' fill='%23E24B4A'/%3E%3Ccircle cx='16' cy='25' r='4' fill='%23E24B4A'/%3E%3C/svg%3E">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#FAF7EF;--surface:#FFFFFF;--text:#1A1A1A;--muted:#5F5E5A;
+  --soft:#F1EFE8;--border:rgba(0,0,0,0.12);
+  --accent:#534AB7;--accent-soft:#EEEDFE;--accent-deep:#3C3489;
+  --hot:#E24B4A;--hot-soft:#FCEBEB;
+  --cool:#378ADD;--cool-soft:#E6F1FB;
+  --warm:#BA7517;--warm-soft:#FAEEDA;
+  --good:#1D9E75;--good-soft:#E1F5EE;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  background:var(--bg);color:var(--text);font-size:18px;line-height:1.6;min-height:100vh}
+.app{max-width:820px;margin:0 auto;padding:18px;min-height:100vh;display:flex;flex-direction:column}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;
+  padding:12px 0;margin-bottom:14px;border-bottom:1px solid var(--border)}
+.topbar h1{font-size:22px;font-weight:600;letter-spacing:-0.01em}
+.topbar .progress{font-size:15px;color:var(--muted);font-variant-numeric:tabular-nums}
+.progress-bar{height:5px;background:var(--border);border-radius:3px;margin-bottom:22px;overflow:hidden}
+.progress-fill{height:100%;background:var(--accent);transition:width .3s}
+
+.chapter{display:none;flex:1;padding-bottom:16px}
+.chapter.active{display:block;animation:fadeIn .3s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.ch-num{display:inline-block;font-size:13px;font-weight:700;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.ch-title{font-size:30px;font-weight:700;line-height:1.2;margin-bottom:18px;color:var(--text);letter-spacing:-0.01em}
+.ch-body{font-size:18px;line-height:1.65}
+.ch-body p{margin-bottom:12px}
+.ch-body em{font-style:italic;color:var(--accent-deep)}
+.ch-body strong{font-weight:600}
+
+.visual{background:var(--surface);border:1px solid var(--border);
+  border-radius:16px;padding:18px;margin-bottom:18px;text-align:center}
+.visual svg{display:block;margin:0 auto;max-width:100%;height:auto}
+.visual-caption{font-size:15px;color:var(--muted);margin-top:10px;line-height:1.5}
+
+.aside{background:var(--accent-soft);color:var(--accent-deep);
+  padding:14px 18px;border-radius:12px;margin:18px 0;font-size:16px;line-height:1.6}
+.aside b{font-weight:700}
+
+.at-home{background:var(--good-soft);color:var(--good);
+  padding:14px 18px;border-radius:12px;margin:18px 0;font-size:16px;line-height:1.6}
+.at-home::before{content:"🧪 Try at home — ";font-weight:700}
+
+.control-row{display:flex;align-items:center;gap:14px;margin:14px 0;flex-wrap:wrap}
+.control-row label{font-size:15px;font-weight:500;color:var(--muted)}
+input[type="range"]{flex:1;min-width:160px;-webkit-appearance:none;appearance:none;
+  height:8px;background:var(--border);border-radius:4px;outline:none}
+input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:30px;height:30px;
+  background:var(--accent);border-radius:50%;cursor:pointer;border:3px solid white;
+  box-shadow:0 2px 5px rgba(0,0,0,.18)}
+input[type="range"]::-moz-range-thumb{width:30px;height:30px;background:var(--accent);
+  border-radius:50%;cursor:pointer;border:3px solid white;box-shadow:0 2px 5px rgba(0,0,0,.18)}
+.readout{font-size:22px;font-weight:700;min-width:90px;text-align:center;
+  color:var(--accent);font-variant-numeric:tabular-nums}
+
+.btn{padding:12px 22px;border:1px solid var(--border);background:var(--surface);
+  border-radius:10px;font-size:17px;font-weight:600;cursor:pointer;color:var(--text);
+  transition:all .15s;font-family:inherit}
+.btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-primary{background:var(--accent);color:white;border-color:var(--accent)}
+.btn-primary:hover:not(:disabled){background:var(--accent-deep);color:white}
+
+.nav{display:flex;align-items:center;justify-content:space-between;
+  padding:14px 0;margin-top:auto;border-top:1px solid var(--border);gap:12px}
+.nav .center{flex:1;text-align:center}
+.ch-jump{background:var(--surface);border:1px solid var(--border);padding:8px 14px;
+  border-radius:8px;font-size:15px;color:var(--text);font-family:inherit;cursor:pointer;max-width:340px}
+
+.twocol{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:center}
+@media (max-width:620px){
+  .twocol{grid-template-columns:1fr}
+  .ch-title{font-size:26px}
+  .topbar h1{font-size:19px}
+}
+
+.clue-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+@media (max-width:620px){.clue-grid{grid-template-columns:repeat(2,1fr)}}
+.clue-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;
+  padding:12px;text-align:center;font-size:14px}
+.clue-card svg{width:100%;height:80px;display:block;margin-bottom:6px}
+.clue-card-title{font-size:15px;font-weight:700;margin-bottom:2px}
+.clue-card-desc{font-size:13px;color:var(--muted);line-height:1.4}
+
+.convert-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:18px}
+.convert-table th,.convert-table td{padding:10px 14px;border:1px solid var(--border);text-align:center}
+.convert-table th{background:var(--soft);font-weight:700;font-size:16px}
+.convert-table td{font-variant-numeric:tabular-nums}
+.convert-table .reveal{color:var(--muted);cursor:pointer;font-style:italic;user-select:none}
+.convert-table .reveal:hover{color:var(--accent)}
+.convert-table .revealed{color:var(--accent);font-weight:700;font-style:normal}
+
+.ref-dots{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:14px}
+@media (min-width:520px){.ref-dots{grid-template-columns:repeat(3,1fr)}}
+.ref-dot{background:var(--surface);border:1px solid var(--border);border-radius:8px;
+  padding:8px 10px;font-size:14px;font-weight:600;cursor:pointer;text-align:center;
+  transition:all .15s;font-family:inherit;color:var(--text)}
+.ref-dot:hover{border-color:var(--accent);color:var(--accent)}
+.ref-dot.active{background:var(--accent);color:white;border-color:var(--accent)}
+
+.bucket{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:18px 20px;margin-bottom:14px}
+.bucket-head{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.bucket-num{background:var(--accent);color:white;font-weight:700;width:34px;height:34px;
+  border-radius:50%;text-align:center;line-height:34px;font-size:17px;flex-shrink:0}
+.bucket-title{font-size:20px;font-weight:700;line-height:1.2}
+.bucket-principle{font-size:16px;color:var(--accent-deep);font-weight:600;margin-bottom:8px}
+.bucket-body{font-size:16px;line-height:1.6}
+.bucket-examples{margin-top:8px;font-size:15px;color:var(--muted)}
+.bucket-examples b{color:var(--text);font-weight:600}
+
+.particle-row{display:flex;align-items:center;gap:14px;padding:10px 14px;background:var(--soft);
+  border-radius:8px;margin-bottom:6px;font-size:17px;font-variant-numeric:tabular-nums}
+.particle-dot{width:18px;height:18px;border-radius:50%;background:var(--accent);flex-shrink:0}
+.particle-bar{height:8px;background:var(--accent);border-radius:4px;flex:1;max-width:200px;transition:width .3s}
+.sum-line{font-size:18px;font-weight:600;text-align:center;margin:14px 0;
+  padding:14px;background:var(--accent-soft);border-radius:10px;color:var(--accent-deep)}
+
+.tour-layout{display:grid;grid-template-columns:auto 1fr;gap:18px}
+@media (max-width:620px){.tour-layout{grid-template-columns:1fr}}
+
+.heat-flow-arrow{font-size:44px;color:var(--hot);text-align:center;margin:8px 0}
+
+.legend{display:flex;gap:14px;justify-content:center;font-size:14px;margin-top:8px;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:6px;color:var(--muted)}
+.legend-swatch{width:14px;height:14px;border-radius:3px}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <h1>What is temperature?</h1>
+    <div class="progress">Chapter <span id="cur-ch">1</span> of 15</div>
+  </header>
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:6.67%"></div></div>
+
+  <main id="main">
+
+  <!-- ========== CH 1: THE MYSTERY ========== -->
+  <section class="chapter" data-ch="0">
+    <div class="ch-num">Chapter 1 — the mystery</div>
+    <h2 class="ch-title">Two marbles. One hot, one cold. What's actually different?</h2>
+    <div class="visual">
+      <svg viewBox="0 0 400 200" width="400" height="200">
+        <defs>
+          <radialGradient id="hot-marble" cx="35%" cy="35%">
+            <stop offset="0%" stop-color="#FFD8A8"/>
+            <stop offset="100%" stop-color="#A86A2C"/>
+          </radialGradient>
+          <radialGradient id="cold-marble" cx="35%" cy="35%">
+            <stop offset="0%" stop-color="#D4E8FA"/>
+            <stop offset="100%" stop-color="#3C6A9C"/>
+          </radialGradient>
+        </defs>
+        <!-- Hot marble -->
+        <g transform="translate(120,110)">
+          <path d="M -22 -42 Q -18 -32 -22 -22 Q -26 -32 -22 -42" stroke="#E24B4A" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.7"/>
+          <path d="M -2 -50 Q 2 -40 -2 -30 Q -6 -40 -2 -50" stroke="#E24B4A" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.7"/>
+          <path d="M 18 -42 Q 22 -32 18 -22 Q 14 -32 18 -42" stroke="#E24B4A" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.7"/>
+          <circle cx="0" cy="0" r="40" fill="url(#hot-marble)" stroke="#7C3F12" stroke-width="2"/>
+          <text x="0" y="65" text-anchor="middle" font-size="16" fill="#A32D2D" font-weight="700">HOT</text>
+        </g>
+        <!-- Cold marble -->
+        <g transform="translate(280,110)">
+          <text x="-22" y="-32" font-size="18" fill="#378ADD" opacity="0.8">❄</text>
+          <text x="-2" y="-44" font-size="18" fill="#378ADD" opacity="0.8">❄</text>
+          <text x="18" y="-32" font-size="18" fill="#378ADD" opacity="0.8">❄</text>
+          <circle cx="0" cy="0" r="40" fill="url(#cold-marble)" stroke="#1F4670" stroke-width="2"/>
+          <text x="0" y="65" text-anchor="middle" font-size="16" fill="#0C447C" font-weight="700">COLD</text>
+        </g>
+      </svg>
+      <div class="visual-caption">Same metal. Same size. Same weight.</div>
+    </div>
+    <div class="ch-body">
+      <p>Imagine you have two metal marbles. They look identical. Same metal, same size, same weight. You couldn't tell them apart by looking.</p>
+      <p>But one is <strong>hot</strong> and one is <strong>cold</strong>. Touch them and you can tell instantly.</p>
+      <p>So <em>something</em> is different inside them. Something invisible. It's not the size, not the weight, not the metal. It's some other thing.</p>
+      <p>That thing has a name: <strong>temperature</strong>. And the rest of these chapters are about what it actually is.</p>
+    </div>
+  </section>
+
+  <!-- ========== CH 2: SENSATION LIES ========== -->
+  <section class="chapter" data-ch="1">
+    <div class="ch-num">Chapter 2 — your hand is a liar</div>
+    <h2 class="ch-title">Before we measure temperature, your fingers can't be trusted.</h2>
+    <div class="ch-body">
+      <p>Here's a famous experiment with three bowls of water — cold, lukewarm, hot. Try it at home some time.</p>
+    </div>
+    <div class="visual">
+      <svg viewBox="0 0 460 240" width="460" height="240" id="bowls-svg">
+        <!-- Cold bowl -->
+        <g transform="translate(80,140)">
+          <ellipse cx="0" cy="40" rx="55" ry="10" fill="#3a2c1a" opacity="0.15"/>
+          <path d="M -55 0 L -45 50 L 45 50 L 55 0 Z" fill="#E0E0DD" stroke="#888" stroke-width="1.5"/>
+          <ellipse cx="0" cy="0" rx="55" ry="12" fill="#85B7EB" stroke="#0C447C" stroke-width="1"/>
+          <text x="0" y="80" text-anchor="middle" font-size="14" font-weight="700" fill="#0C447C">COLD</text>
+        </g>
+        <!-- Lukewarm bowl -->
+        <g transform="translate(230,140)">
+          <ellipse cx="0" cy="40" rx="55" ry="10" fill="#3a2c1a" opacity="0.15"/>
+          <path d="M -55 0 L -45 50 L 45 50 L 55 0 Z" fill="#E0E0DD" stroke="#888" stroke-width="1.5"/>
+          <ellipse cx="0" cy="0" rx="55" ry="12" fill="#D9CFB7" stroke="#888" stroke-width="1"/>
+          <text x="0" y="80" text-anchor="middle" font-size="14" font-weight="700" fill="#5F5E5A">LUKEWARM</text>
+        </g>
+        <!-- Hot bowl -->
+        <g transform="translate(380,140)">
+          <ellipse cx="0" cy="40" rx="55" ry="10" fill="#3a2c1a" opacity="0.15"/>
+          <path d="M -55 0 L -45 50 L 45 50 L 55 0 Z" fill="#E0E0DD" stroke="#888" stroke-width="1.5"/>
+          <ellipse cx="0" cy="0" rx="55" ry="12" fill="#F09595" stroke="#791F1F" stroke-width="1"/>
+          <path d="M -20 -20 Q -16 -10 -20 0" stroke="#E24B4A" stroke-width="1.5" fill="none" opacity="0.6"/>
+          <path d="M 0 -28 Q 4 -18 0 -8" stroke="#E24B4A" stroke-width="1.5" fill="none" opacity="0.6"/>
+          <path d="M 20 -20 Q 24 -10 20 0" stroke="#E24B4A" stroke-width="1.5" fill="none" opacity="0.6"/>
+          <text x="0" y="80" text-anchor="middle" font-size="14" font-weight="700" fill="#A32D2D">HOT</text>
+        </g>
+        <!-- Step indicator -->
+        <text x="230" y="30" text-anchor="middle" font-size="16" font-weight="600" fill="#534AB7" id="bowls-step-text">Step 1: hands ready</text>
+      </svg>
+    </div>
+    <div class="control-row">
+      <button class="btn btn-primary" id="bowls-go">Run the experiment →</button>
+      <button class="btn" id="bowls-reset" style="display:none">Reset</button>
+    </div>
+    <div class="ch-body" id="bowls-result" hidden>
+      <div class="aside" style="background:var(--hot-soft);color:#791F1F">
+        <b>Same lukewarm water.</b> One hand says <b>"warm!"</b> The other says <b>"cool!"</b> Two readings, one bowl.
+      </div>
+      <p>Your hand isn't actually measuring temperature. It's measuring how much heat is rushing in or out of your skin <em>right now</em>. That depends on what your hand was just doing.</p>
+      <p>If you want to know how hot something <em>really</em> is, you need a tool that won't lie. That's what a thermometer is for.</p>
+    </div>
+  </section>
+
+  <!-- ========== CH 3: THE CLUES ========== -->
+  <section class="chapter" data-ch="2">
+    <div class="ch-num">Chapter 3 — the clues</div>
+    <h2 class="ch-title">Heat almost anything, and something about it changes.</h2>
+    <div class="ch-body">
+      <p>Long before anyone knew what temperature really is, people noticed: when stuff gets hotter, <em>something about it</em> changes — and you can use that change as a measurement.</p>
+      <p>Here are six different clues people noticed:</p>
+    </div>
+    <div class="clue-grid">
+      <div class="clue-card">
+        <svg viewBox="0 0 100 80"><circle cx="35" cy="50" r="22" fill="#FAC775" stroke="#854F0B" stroke-width="1.5"/><circle cx="65" cy="40" r="32" fill="#FAC775" stroke="#854F0B" stroke-width="1.5"/><line x1="50" y1="72" x2="35" y2="78" stroke="#854F0B" stroke-width="1.5"/><text x="50" y="14" text-anchor="middle" font-size="12" fill="#854F0B" font-weight="600">cool → warm</text></svg>
+        <div class="clue-card-title">Air balloon</div>
+        <div class="clue-card-desc">Warm air takes more room. Balloons grow.</div>
+      </div>
+      <div class="clue-card">
+        <svg viewBox="0 0 100 80"><rect x="44" y="14" width="12" height="50" rx="2" fill="#E0E0DD" stroke="#888" stroke-width="1"/><circle cx="50" cy="68" r="9" fill="#C0392B" stroke="#7C2317" stroke-width="1"/><rect x="46" y="40" width="8" height="28" fill="#C0392B"/></svg>
+        <div class="clue-card-title">Mercury rises</div>
+        <div class="clue-card-desc">Liquid in a tube climbs when warmed.</div>
+      </div>
+      <div class="clue-card">
+        <svg viewBox="0 0 100 80"><rect x="20" y="38" width="60" height="6" fill="#888"/><rect x="20" y="44" width="60" height="6" fill="#BA7517"/><path d="M 20 38 Q 50 28 80 50" fill="none" stroke="#888" stroke-width="6" stroke-linecap="round" opacity="0.4"/></svg>
+        <div class="clue-card-title">Bimetal bends</div>
+        <div class="clue-card-desc">Two metals stuck together — one stretches more.</div>
+      </div>
+      <div class="clue-card">
+        <svg viewBox="0 0 100 80"><line x1="20" y1="40" x2="80" y2="40" stroke="#888" stroke-width="3"/><circle cx="32" cy="40" r="3" fill="#534AB7"/><circle cx="48" cy="40" r="3" fill="#534AB7"/><circle cx="64" cy="40" r="3" fill="#534AB7"/><path d="M 32 40 Q 36 30 40 40" stroke="#534AB7" stroke-width="1.5" fill="none"/><path d="M 48 40 Q 52 30 56 40" stroke="#534AB7" stroke-width="1.5" fill="none"/><path d="M 64 40 Q 68 30 72 40" stroke="#534AB7" stroke-width="1.5" fill="none"/></svg>
+        <div class="clue-card-title">Resistance shifts</div>
+        <div class="clue-card-desc">Electricity flows differently through hot wire.</div>
+      </div>
+      <div class="clue-card">
+        <svg viewBox="0 0 100 80"><circle cx="50" cy="40" r="22" fill="#E24B4A"/><circle cx="50" cy="40" r="14" fill="#FAC775"/><circle cx="50" cy="40" r="7" fill="#FFFFFF"/><path d="M 18 40 L 8 40 M 82 40 L 92 40 M 50 8 L 50 18 M 50 62 L 50 72" stroke="#E24B4A" stroke-width="2" stroke-linecap="round"/></svg>
+        <div class="clue-card-title">Hot things glow</div>
+        <div class="clue-card-desc">A red-hot poker. The sun. They give off light.</div>
+      </div>
+      <div class="clue-card">
+        <svg viewBox="0 0 100 80"><rect x="18" y="32" width="20" height="20" fill="#378ADD"/><rect x="38" y="32" width="20" height="20" fill="#1D9E75"/><rect x="58" y="32" width="20" height="20" fill="#FAC775"/><text x="48" y="68" text-anchor="middle" font-size="9" fill="#5F5E5A">cold → warm</text></svg>
+        <div class="clue-card-title">Color changes</div>
+        <div class="clue-card-desc">Some crystals shift color at known temps.</div>
+      </div>
+    </div>
+    <div class="ch-body">
+      <p>For 400 years, people picked one of these clues and built thermometers around it. Nobody knew <em>why</em> heat made stuff change. They just knew it did, reliably enough to measure.</p>
+      <p>Let's pick the simplest one — mercury rising — and follow it.</p>
+    </div>
+  </section>
+
+  <!-- ========== CH 4: BUILDING A THERMOMETER ========== -->
+  <section class="chapter" data-ch="3">
+    <div class="ch-num">Chapter 4 — building a thermometer</div>
+    <h2 class="ch-title">A column that goes up and down. That's it. No numbers yet.</h2>
+    <div class="visual" id="therm1-vis">
+      <svg viewBox="0 0 320 320" width="320" height="320" id="therm1-svg"></svg>
+    </div>
+    <div class="control-row">
+      <label>cooler</label>
+      <input type="range" id="therm1-slider" min="0" max="100" value="40">
+      <label>hotter</label>
+    </div>
+    <div class="ch-body">
+      <p>Here's a tube of mercury (the silver-red liquid). When you warm it, the mercury expands and climbs. When you cool it, it shrinks and falls.</p>
+      <p>Drag the slider. Watch the column. <strong>The HEIGHT is the measurement.</strong> That's the whole idea.</p>
+      <p>For now there are no numbers on it. Just <em>higher</em> and <em>lower</em>. We'll add numbers in the next chapter.</p>
+    </div>
+  </section>
+
+  <!-- ========== CH 5: PUTTING NUMBERS ON IT (CELSIUS) ========== -->
+  <section class="chapter" data-ch="4">
+    <div class="ch-num">Chapter 5 — putting numbers on it</div>
+    <h2 class="ch-title">Pick two anchors everyone in the world can reproduce. Mark them. Divide.</h2>
+    <div class="ch-body">
+      <p>To turn the column into <em>numbers</em>, you need at least two reliable points — temperatures anyone, anywhere, can recreate.</p>
+      <p>Here's what Anders Celsius did in 1742:</p>
+    </div>
+    <div class="visual" id="celsius-vis">
+      <svg viewBox="0 0 380 320" width="380" height="320" id="celsius-svg"></svg>
+    </div>
+    <div class="control-row">
+      <button class="btn" id="celsius-step1">Step 1: dunk in ice water →</button>
+      <button class="btn" id="celsius-step2" disabled>Step 2: dunk in boiling water →</button>
+      <button class="btn" id="celsius-step3" disabled>Step 3: divide into 100 parts →</button>
+    </div>
+    <div class="ch-body">
+      <p id="celsius-text-1">Click step 1 to start.</p>
+    </div>
+  </section>
+
+  <!-- ========== CH 6: FAHRENHEIT ========== -->
+  <section class="chapter" data-ch="5">
+    <div class="ch-num">Chapter 6 — other people, other anchors</div>
+    <h2 class="ch-title">Fahrenheit picked different points. Same physical thing, different ruler.</h2>
+    <div class="ch-body">
+      <p>About 18 years before Celsius, a German named Daniel Fahrenheit picked his own anchors:</p>
+      <ul style="margin:12px 0 12px 22px;font-size:17px;line-height:1.8">
+        <li><strong>0 °F</strong> — the coldest mixture he could reliably make in his lab (ice + salt + water).</li>
+        <li><strong>96 °F</strong> — roughly the temperature of a healthy human body.</li>
+      </ul>
+      <p>Different anchors, different numbers. But it's the <em>same column of mercury</em>. The same physical thing. He just wrote different labels on the side.</p>
+    </div>
+    <div class="visual" id="fahr-vis">
+      <svg viewBox="0 0 380 320" width="380" height="320" id="fahr-svg"></svg>
+    </div>
+    <div class="control-row">
+      <label>cooler</label>
+      <input type="range" id="fahr-slider" min="0" max="100" value="40">
+      <label>hotter</label>
+    </div>
+    <div class="ch-body">
+      <p>Drag the slider. Notice both numbers move together — they're reading the <em>same</em> mercury column. Two scales, one measurement.</p>
+      <p>So now we have two ways to write a temperature down. How do you turn one into the other?</p>
+    </div>
+  </section>
+
+  <!-- ========== CH 7: GUESS THE RULE ========== -->
+  <section class="chapter" data-ch="6">
+    <div class="ch-num">Chapter 7 — guess the rule</div>
+    <h2 class="ch-title">Like a y = f(x) table. Look for the pattern.</h2>
+    <div class="ch-body">
+      <p>Here's a table of matched temperatures. Two are filled in. Click the question marks one at a time.</p>
+    </div>
+    <table class="convert-table">
+      <thead><tr><th>Celsius (°C)</th><th>Fahrenheit (°F)</th></tr></thead>
+      <tbody>
+        <tr><td>0</td><td>32</td></tr>
+        <tr><td>100</td><td>212</td></tr>
+        <tr><td>20</td><td><span class="reveal" data-answer="68">tap to reveal</span></td></tr>
+        <tr><td>10</td><td><span class="reveal" data-answer="50">tap to reveal</span></td></tr>
+        <tr><td>40</td><td><span class="reveal" data-answer="104">tap to reveal</span></td></tr>
+        <tr><td>37</td><td><span class="reveal" data-answer="98.6">tap to reveal</span></td></tr>
+      </tbody>
+    </table>
+    <div class="ch-body" id="convert-hint" hidden>
+      <p>Notice: when Celsius goes up by <strong>10</strong>, Fahrenheit goes up by <strong>18</strong>. So Fahrenheit moves <strong>1.8 times faster</strong> than Celsius. That's the <em>stretch</em>.</p>
+      <p>And when Celsius is 0, Fahrenheit is 32. So we also <em>shift</em> by 32.</p>
+      <button class="btn btn-primary" id="show-rule">Reveal the rule →</button>
+    </div>
+    <div class="ch-body" id="convert-rule" hidden>
+      <div class="aside" style="font-size:18px;text-align:center">
+        <b>F = (9/5) × C + 32</b><br>
+        <span style="font-size:15px">Stretch by 9⁄5 (= 1.8). Then shift up by 32.</span>
+      </div>
+      <p>Three scales, but each one is a simple rule. We'll meet a third scale (Kelvin) soon — its rule is even simpler.</p>
+    </div>
+  </section>
+
+  <!-- ========== CH 8: ZOOM IN ========== -->
+  <section class="chapter" data-ch="7">
+    <div class="ch-num">Chapter 8 — zoom in</div>
+    <h2 class="ch-title">For 400 years no one knew why the column rises. Now we zoom inside the mercury.</h2>
+    <div class="visual">
+      <div id="zoom-pbox" style="display:flex;justify-content:center"></div>
+    </div>
+    <div class="control-row">
+      <label>cooler</label>
+      <input type="range" id="zoom-slider" min="20" max="600" value="280">
+      <label>hotter</label>
+      <span class="readout" id="zoom-readout">280</span>
+    </div>
+    <div class="ch-body">
+      <p>That box is what's <em>inside</em> the mercury, magnified about a billion times. Stuff is made of tiny particles called <strong>atoms</strong>, and they're never sitting still. They bounce around, all the time, in every direction.</p>
+      <p>Drag the slider. Hotter = the atoms wiggle harder. Cooler = they wiggle softer. That's it. That's what hot and cold actually <em>are</em>.</p>
+    </div>
+    <div class="aside">
+      <b>How do we know atoms exist?</b> In 1827, a botanist named Robert Brown looked at pollen grains floating in water through a microscope. The grains were jiggling — pushed around by something invisible. That something was the water atoms, slamming into them. Atoms aren't a guess. We've literally watched them push pollen around for 200 years.
+    </div>
+  </section>
+
+  <!-- ========== CH 9: THE CONNECTION ========== -->
+  <section class="chapter" data-ch="8">
+    <div class="ch-num">Chapter 9 — the miracle</div>
+    <h2 class="ch-title">The wiggle inside is what makes the column outside rise.</h2>
+    <div class="visual">
+      <div class="twocol">
+        <div id="conn-pbox" style="display:flex;justify-content:center"></div>
+        <div id="conn-therm" style="display:flex;justify-content:center"></div>
+      </div>
+    </div>
+    <div class="control-row">
+      <label>cooler</label>
+      <input type="range" id="conn-slider" min="20" max="600" value="280">
+      <label>hotter</label>
+    </div>
+    <div class="ch-body">
+      <p>On the left: atoms in the mercury, wiggling. On the right: the column.</p>
+      <p>Drag the slider. They move together. That's not a coincidence. <strong>It's the same thing.</strong></p>
+      <p>Hotter atoms wiggle harder. Wiggling harder means they push each other further apart. The mercury takes more space. The column rises.</p>
+      <p>This is the <em>miracle</em>: every clue from Chapter 3 — the balloon, the bimetal, the resistance, the glow — they all work for the same hidden reason. It's atoms wiggling. The whole world of thermometers, every one we've ever built, is just a way of <em>peeking at the wiggle</em>.</p>
+    </div>
+    <div class="aside">
+      <b>Feynman's bouncing ball.</b> A ball bounces, then slows down, then "stops." Where did the motion go? It didn't disappear. It went <em>into the floor</em> — the floor's atoms started wiggling a tiny bit harder. The floor got slightly warmer. Heat is just motion you can't see anymore.
+    </div>
+  </section>
+
+  <!-- ========== CH 10: NOISY CROWD ========== -->
+  <section class="chapter" data-ch="9">
+    <div class="ch-num">Chapter 10 — the noisy crowd</div>
+    <h2 class="ch-title">Particles fly in every direction. Direction is not the temperature.</h2>
+    <div class="visual">
+      <div id="noisy-pbox" style="display:flex;justify-content:center"></div>
+      <div class="legend">
+        <div class="legend-item"><span class="legend-swatch" style="background:#534AB7"></span> particle</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:#534AB7;opacity:0.3;border-radius:50%"></span> wiggle ring (bigger = faster)</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:#E24B4A"></span> average direction</div>
+      </div>
+    </div>
+    <div class="ch-body">
+      <p>Watch the box. Around each particle is a faint ring — that's its <strong>wiggle</strong>, a number that says how energetically it's moving. Bigger ring = faster particle.</p>
+      <p>Now look at the tiny red arrow in the middle. That's the <strong>average direction</strong> of all the particles combined. Notice anything?</p>
+      <p>It's basically <em>zero</em>. It barely points anywhere. That's because some particles go left and some go right, some up, some down — when you add them all up, the directions mostly cancel out.</p>
+      <p>So direction can't be temperature. <strong>What matters is the wiggle</strong> — how energetic each particle is, regardless of which way it's pointed.</p>
+      <p>Now we just need to combine all those wiggles into one number.</p>
+    </div>
+  </section>
+
+  <!-- ========== CH 11: AVERAGE ========== -->
+  <section class="chapter" data-ch="10">
+    <div class="ch-num">Chapter 11 — taking the average</div>
+    <h2 class="ch-title">One number for the whole crowd. Add them all up. Divide by how many.</h2>
+    <div class="ch-body">
+      <p>Here are 5 particles. Each has its own wiggle level — a number from 1 to 10:</p>
+    </div>
+    <div id="avg-particles">
+      <div class="particle-row"><div class="particle-dot"></div><span>Particle 1 — wiggle =</span><strong style="font-size:20px;color:var(--accent)" data-w="0">3</strong><div class="particle-bar" style="width:30%"></div></div>
+      <div class="particle-row"><div class="particle-dot"></div><span>Particle 2 — wiggle =</span><strong style="font-size:20px;color:var(--accent)" data-w="1">5</strong><div class="particle-bar" style="width:50%"></div></div>
+      <div class="particle-row"><div class="particle-dot"></div><span>Particle 3 — wiggle =</span><strong style="font-size:20px;color:var(--accent)" data-w="2">2</strong><div class="particle-bar" style="width:20%"></div></div>
+      <div class="particle-row"><div class="particle-dot"></div><span>Particle 4 — wiggle =</span><strong style="font-size:20px;color:var(--accent)" data-w="3">7</strong><div class="particle-bar" style="width:70%"></div></div>
+      <div class="particle-row"><div class="particle-dot"></div><span>Particle 5 — wiggle =</span><strong style="font-size:20px;color:var(--accent)" data-w="4">3</strong><div class="particle-bar" style="width:30%"></div></div>
+    </div>
+    <div class="sum-line">
+      <strong>Add them up:</strong> 3 + 5 + 2 + 7 + 3 = <strong>20</strong><br>
+      <strong>Divide by 5:</strong> 20 ÷ 5 = <strong style="font-size:24px">4</strong> ← this is the average wiggle. <em>This is the temperature.</em>
+    </div>
+    <div class="control-row">
+      <label>cooler</label>
+      <input type="range" id="avg-slider" min="0" max="100" value="40">
+      <label>hotter</label>
+    </div>
+    <div class="ch-body">
+      <p>Drag the slider. Every particle's wiggle goes up. The average climbs. <strong>That climbing average is what a thermometer reads.</strong></p>
+      <p>Mercury doesn't measure individual atoms — there are billions of billions of them. It measures the <em>collective effect</em> of their average wiggle: the column rising. That's the trick.</p>
+    </div>
+  </section>
+
+  <!-- ========== CH 12: HEAT VS TEMP ========== -->
+  <section class="chapter" data-ch="11">
+    <div class="ch-num">Chapter 12 — heat is not temperature</div>
+    <h2 class="ch-title">A swimming pool has more heat than a teacup of boiling water.</h2>
+    <div class="visual">
+      <svg viewBox="0 0 460 220" width="460" height="220">
+        <!-- Pool -->
+        <g transform="translate(40,40)">
+          <rect x="0" y="60" width="220" height="100" fill="#85B7EB" stroke="#0C447C" stroke-width="2"/>
+          <rect x="0" y="60" width="220" height="14" fill="#A8CCEE"/>
+          <text x="110" y="180" text-anchor="middle" font-size="14" font-weight="700" fill="#0C447C">SWIMMING POOL</text>
+          <text x="110" y="50" text-anchor="middle" font-size="20" font-weight="700" fill="#0C447C">20°C</text>
+          <text x="110" y="130" text-anchor="middle" font-size="11" fill="white" font-weight="600">trillions of atoms wiggling a little</text>
+        </g>
+        <!-- Cup -->
+        <g transform="translate(330,80)">
+          <path d="M -25 0 L -22 70 L 22 70 L 25 0 Z" fill="#F5F2EA" stroke="#888" stroke-width="2"/>
+          <ellipse cx="0" cy="0" rx="25" ry="6" fill="#E24B4A" stroke="#791F1F" stroke-width="1"/>
+          <path d="M -10 -16 Q -6 -8 -10 0" stroke="#E24B4A" stroke-width="1.5" fill="none"/>
+          <path d="M 0 -22 Q 4 -14 0 -6" stroke="#E24B4A" stroke-width="1.5" fill="none"/>
+          <path d="M 10 -16 Q 14 -8 10 0" stroke="#E24B4A" stroke-width="1.5" fill="none"/>
+          <text x="0" y="100" text-anchor="middle" font-size="14" font-weight="700" fill="#A32D2D">TEACUP</text>
+          <text x="0" y="-32" text-anchor="middle" font-size="20" font-weight="700" fill="#A32D2D">100°C</text>
+        </g>
+      </svg>
+      <div class="visual-caption">Pool: more total heat. Cup: higher temperature.</div>
+    </div>
+    <div class="ch-body">
+      <p>Which has more <em>heat</em> — the pool or the cup?</p>
+      <p>The <strong>pool</strong>. Way more. There are trillions more atoms in the pool, all wiggling. Add up all that wiggle energy and the total dwarfs the cup.</p>
+      <p>But which is <em>hotter</em>? The <strong>cup</strong>. Each atom in the cup is wiggling much harder than each atom in the pool. The cup has higher <em>average</em> wiggle.</p>
+      <p>So:</p>
+      <ul style="margin:8px 0 12px 22px;font-size:17px;line-height:1.8">
+        <li><strong>Temperature</strong> = the <em>average</em> wiggle per atom. Per particle.</li>
+        <li><strong>Heat</strong> = the <em>total</em> wiggle energy in the whole bunch. Adds up.</li>
+      </ul>
+      <p>And here's a rule that matters: <strong>heat always flows from hotter to cooler — never the reverse.</strong> Drop an ice cube into hot tea, the tea's heat flows into the ice (not the other way). The cube melts because hot atoms keep colliding with the ice atoms and passing on their wiggle.</p>
+      <div class="aside" style="background:var(--hot-soft);color:#791F1F">
+        <b>"Don't let the cold in!"</b> is a fib your parents tell you. Cold doesn't flow. Heat flows out. Same thing in the end, but worth knowing.
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CH 13: KELVIN ========== -->
+  <section class="chapter" data-ch="12">
+    <div class="ch-num">Chapter 13 — Kelvin: the honest scale</div>
+    <h2 class="ch-title">Drag the wiggle all the way down. The atoms freeze. Right there is zero Kelvin.</h2>
+    <div class="visual">
+      <div id="kelvin-pbox" style="display:flex;justify-content:center"></div>
+    </div>
+    <div class="control-row">
+      <label>0 K</label>
+      <input type="range" id="kelvin-slider" min="0" max="600" value="280">
+      <label>hot</label>
+      <span class="readout" id="kelvin-readout">280 K</span>
+    </div>
+    <div class="ch-body">
+      <p>Slide it all the way to the left. The particles stop. There's <em>no</em> wiggle left. That's it. Below this is impossible — there's no such thing as "less than no motion."</p>
+      <p>This bottom of the universe sits at <strong>−273 °C</strong> on the Celsius scale. (And <strong>−460 °F</strong> on Fahrenheit.) It's a real place. But on those scales it just looks like a weird, ugly negative number.</p>
+      <p>So Lord Kelvin (a Scottish physicist, 1848) said: <em>let's just start the scale there</em>. Call no-wiggle <strong>0 K</strong>. The size of each step stays the same as a Celsius degree, so:</p>
+      <div class="aside" style="text-align:center;font-size:18px">
+        <b>K = C + 273</b><br>
+        <span style="font-size:15px">Just shift Celsius down by 273. No stretching. The simplest rule.</span>
+      </div>
+      <p>Why bother? Because Kelvin is the only scale where the <em>number</em> on the thermometer is honestly proportional to the <em>amount of wiggle</em>. Double the Kelvin, double the wiggle energy. That's why scientists use it.</p>
+    </div>
+  </section>
+
+  <!-- ========== CH 14: UNIVERSE TOUR ========== -->
+  <section class="chapter" data-ch="13">
+    <div class="ch-num">Chapter 14 — the universe tour</div>
+    <h2 class="ch-title">Three rulers, one wiggle. From the bottom of the universe to the surface of the sun.</h2>
+    <div class="visual">
+      <div class="tour-layout">
+        <div id="tour-therm" style="display:flex;justify-content:center"></div>
+        <div>
+          <div id="tour-pbox" style="display:flex;justify-content:center"></div>
+          <div style="text-align:center;font-size:14px;color:var(--muted);margin-top:6px">how the atoms wiggle at this temperature</div>
+        </div>
+      </div>
+    </div>
+    <div class="ref-dots" id="ref-dots"></div>
+    <div class="ch-body" style="margin-top:14px">
+      <p>Click any dot. All three numbers (Kelvin, Celsius, Fahrenheit) update together. The wiggle box on the right shows you what the atoms are doing at that temperature.</p>
+      <p>It's all the same thing. Just three different ways to write the same wiggle down.</p>
+    </div>
+  </section>
+
+  <!-- ========== CH 15: BONUS - HOW WE MEASURE ========== -->
+  <section class="chapter" data-ch="14">
+    <div class="ch-num">Bonus chapter</div>
+    <h2 class="ch-title">How we actually measure it: 5 different physical tricks.</h2>
+    <div class="ch-body">
+      <p>Every thermometer ever made works on one of five principles. Each one is a different way the wiggle of atoms gives itself away.</p>
+    </div>
+    <div class="bucket">
+      <div class="bucket-head"><div class="bucket-num">1</div><div class="bucket-title">Things grow when hot</div></div>
+      <div class="bucket-principle">Principle: thermal expansion</div>
+      <div class="bucket-body">When atoms wiggle harder, they push each other further apart. Stuff takes up more room. We measure how much it grew.</div>
+      <div class="bucket-examples"><b>Where you'll see it:</b> mercury or alcohol thermometers (liquid in a glass tube), Galileo's air thermoscope (gas pushing water down), bimetallic strips that bend (old wall thermostats, oven dials).</div>
+    </div>
+    <div class="bucket">
+      <div class="bucket-head"><div class="bucket-num">2</div><div class="bucket-title">Electricity flows differently when hot</div></div>
+      <div class="bucket-principle">Principle: electrical resistance changes with temperature</div>
+      <div class="bucket-body">When atoms in a wire wiggle harder, they get in the way of electrons trying to flow through. Resistance goes up (in metals) or down (in semiconductors). We push a tiny known current through and measure how hard it is to get across.</div>
+      <div class="bucket-examples"><b>Where you'll see it:</b> RTDs (platinum wire — used in scientific labs and industry for high precision), thermistors (semiconductor beads — inside your digital fever thermometer, your home thermostat, your phone's battery sensor).</div>
+    </div>
+    <div class="bucket">
+      <div class="bucket-head"><div class="bucket-num">3</div><div class="bucket-title">Two metals together make a tiny voltage</div></div>
+      <div class="bucket-principle">Principle: thermoelectric effect (Seebeck, 1821)</div>
+      <div class="bucket-body">Weld a wire of one metal to a wire of another, and the joined point produces a tiny voltage that depends on its temperature. No batteries needed — the temperature itself makes the voltage. Really useful for extreme temperatures where other thermometers melt.</div>
+      <div class="bucket-examples"><b>Where you'll see it:</b> thermocouples — inside jet engines, kilns, blast furnaces, rocket exhausts. Industrial workhorses.</div>
+    </div>
+    <div class="bucket">
+      <div class="bucket-head"><div class="bucket-num">4</div><div class="bucket-title">Hot things glow</div></div>
+      <div class="bucket-principle">Principle: thermal radiation (everything glows; hotter = brighter and bluer)</div>
+      <div class="bucket-body">Wiggling atoms shake their electrons, and shaking electrons send out light. All matter does this. At room temperature, the light is invisible (infrared). At higher temperatures, things start glowing red, then orange, then white-hot. We point a sensor at the object and read how brightly it glows.</div>
+      <div class="bucket-examples"><b>Where you'll see it:</b> infrared "guns" pointed at foreheads or food, pyrometers in steel mills, telescopes measuring stars (we know the sun's surface is 5,778 K because of how it glows). The only way to measure things you can't touch.</div>
+    </div>
+    <div class="bucket">
+      <div class="bucket-head"><div class="bucket-num">5</div><div class="bucket-title">Stuff transforms at a known temperature</div></div>
+      <div class="bucket-principle">Principle: phase or color change at a fixed temperature</div>
+      <div class="bucket-body">Some materials flip between two states — solid to liquid, or one color to another — at a precise, known temperature. They can't tell you a continuous reading, but they can tell you "above" or "below" that line.</div>
+      <div class="bucket-examples"><b>Where you'll see it:</b> liquid-crystal forehead strips (different crystals turn green at different temps), mood rings, "Tempil" wax crayons that welders draw on metal to check it crossed a heat threshold.</div>
+    </div>
+    <div class="ch-body">
+      <p>Notice what's happening: each one is a different macroscopic side-effect of the same microscopic motion. Atoms wiggle harder → things grow / electricity slows / voltages appear / light comes off / phases switch.</p>
+      <p>The way we measure temperature reveals what temperature <em>is</em>. There's only one underlying thing — wiggle — and many different windows onto it.</p>
+    </div>
+  </section>
+
+  </main>
+
+  <nav class="nav">
+    <button class="btn" id="prev-btn" disabled>← Back</button>
+    <div class="center"><select class="ch-jump" id="ch-jump"></select></div>
+    <button class="btn btn-primary" id="next-btn">Next →</button>
+  </nav>
+</div>
+
+<script>
+// ============================================================
+// HELPERS
+// ============================================================
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const SVG_NS = "http://www.w3.org/2000/svg";
+function el(tag, attrs={}, parent=null) {
+  const e = document.createElementNS(SVG_NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+// Re-clone an element to drop all existing event listeners. Lets us
+// re-bind cleanly when a chapter is re-entered.
+function freshen(sel) {
+  const old = document.querySelector(sel);
+  if (!old || !old.parentNode) return old;
+  const fresh = old.cloneNode(true);
+  old.parentNode.replaceChild(fresh, old);
+  return fresh;
+}
+function freshenAll(sel) {
+  return Array.from(document.querySelectorAll(sel)).map(old => {
+    const fresh = old.cloneNode(true);
+    old.parentNode.replaceChild(fresh, old);
+    return fresh;
+  });
+}
+
+const TITLES = [
+  "The mystery","Your hand is a liar","Six clues","Building a thermometer",
+  "Putting numbers on it","Other anchors","Guess the rule","Zoom in",
+  "The miracle","The noisy crowd","Taking the average","Heat ≠ temperature",
+  "Kelvin","The universe tour","How we actually measure"
+];
+
+let currentChapter = 0;
+const chapterEls = $$('.chapter');
+const TOTAL = chapterEls.length;
+
+// Chapter-specific cleanup callbacks
+const cleanupCallbacks = {};
+const setupCallbacks = {};
+
+// ============================================================
+// WIGGLE BOX (used in many chapters)
+// ============================================================
+class WiggleBox {
+  constructor(container, opts = {}) {
+    this.w = opts.w || 280;
+    this.h = opts.h || 220;
+    this.n = opts.n || 22;
+    this.showHalos = !!opts.showHalos;
+    this.showAvgArrow = !!opts.showAvgArrow;
+    this.particleColor = opts.color || '#534AB7';
+    this.bgColor = opts.bg || '#F1EFE8';
+    this.tempK = opts.initT != null ? opts.initT : 280;
+    this.particleRadius = opts.r || 6;
+
+    this.svg = el('svg', { viewBox: `0 0 ${this.w} ${this.h}`, width: this.w, height: this.h, style: 'max-width:100%;height:auto' });
+    container.appendChild(this.svg);
+
+    el('rect', { x: 0, y: 0, width: this.w, height: this.h, fill: this.bgColor, rx: 12 }, this.svg);
+    this.particleGroup = el('g', {}, this.svg);
+
+    this.particles = [];
+    for (let i = 0; i < this.n; i++) {
+      const p = {
+        x: this.particleRadius + Math.random() * (this.w - 2*this.particleRadius),
+        y: this.particleRadius + Math.random() * (this.h - 2*this.particleRadius),
+        r: this.particleRadius
+      };
+      const angle = Math.random() * Math.PI * 2;
+      const speed = this.tempToSpeed(this.tempK);
+      p.vx = speed * Math.cos(angle);
+      p.vy = speed * Math.sin(angle);
+      if (this.showHalos) {
+        p.haloEl = el('circle', { cx: p.x, cy: p.y, r: 12, fill: 'none', stroke: this.particleColor, 'stroke-width': 1.5, opacity: 0.35 }, this.particleGroup);
+      }
+      p.dotEl = el('circle', { cx: p.x, cy: p.y, r: p.r, fill: this.particleColor }, this.particleGroup);
+      this.particles.push(p);
+    }
+
+    if (this.showAvgArrow) {
+      const cx = this.w/2, cy = this.h/2;
+      this.arrowGroup = el('g', { transform: `translate(${cx} ${cy})` }, this.svg);
+      el('circle', { cx: 0, cy: 0, r: 14, fill: 'rgba(255,255,255,0.6)', stroke: '#E24B4A', 'stroke-dasharray': '3 3' }, this.arrowGroup);
+      this.arrowLine = el('line', { x1: 0, y1: 0, x2: 0, y2: 0, stroke: '#E24B4A', 'stroke-width': 3, 'stroke-linecap': 'round' }, this.arrowGroup);
+      el('circle', { cx: 0, cy: 0, r: 3, fill: '#E24B4A' }, this.arrowGroup);
+      this.avgLabel = el('text', { x: 0, y: 32, 'text-anchor': 'middle', 'font-size': 12, fill: '#E24B4A', 'font-weight': 600 }, this.arrowGroup);
+      this.avgLabel.textContent = 'avg dir';
+    }
+
+    this.lastT = 0;
+    this.running = false;
+  }
+
+  tempToSpeed(T) {
+    return 0.045 * Math.sqrt(Math.max(0, T));
+  }
+
+  setTemp(T) {
+    const old = this.tempK;
+    this.tempK = T;
+    const newSpeed = this.tempToSpeed(T);
+    this.particles.forEach(p => {
+      const cur = Math.hypot(p.vx, p.vy);
+      if (cur > 1e-6) {
+        const f = newSpeed / cur;
+        p.vx *= f; p.vy *= f;
+      } else if (newSpeed > 0) {
+        const a = Math.random() * Math.PI * 2;
+        p.vx = newSpeed * Math.cos(a);
+        p.vy = newSpeed * Math.sin(a);
+      }
+    });
+  }
+
+  step(dt) {
+    this.particles.forEach(p => {
+      p.x += p.vx * dt;
+      p.y += p.vy * dt;
+      if (p.x < p.r) { p.x = p.r; p.vx = Math.abs(p.vx); }
+      if (p.x > this.w - p.r) { p.x = this.w - p.r; p.vx = -Math.abs(p.vx); }
+      if (p.y < p.r) { p.y = p.r; p.vy = Math.abs(p.vy); }
+      if (p.y > this.h - p.r) { p.y = this.h - p.r; p.vy = -Math.abs(p.vy); }
+    });
+  }
+
+  render() {
+    this.particles.forEach(p => {
+      p.dotEl.setAttribute('cx', p.x);
+      p.dotEl.setAttribute('cy', p.y);
+      if (p.haloEl) {
+        const speed = Math.hypot(p.vx, p.vy);
+        const haloR = 8 + speed * 22;
+        p.haloEl.setAttribute('cx', p.x);
+        p.haloEl.setAttribute('cy', p.y);
+        p.haloEl.setAttribute('r', haloR);
+      }
+    });
+    if (this.showAvgArrow && this.arrowLine) {
+      let avgVx = 0, avgVy = 0;
+      this.particles.forEach(p => { avgVx += p.vx; avgVy += p.vy; });
+      avgVx /= this.particles.length;
+      avgVy /= this.particles.length;
+      const scale = 200;
+      this.arrowLine.setAttribute('x2', avgVx * scale);
+      this.arrowLine.setAttribute('y2', avgVy * scale);
+    }
+  }
+
+  start() {
+    if (this.running) return;
+    this.running = true;
+    this.lastT = 0;
+    const loop = (now) => {
+      if (!this.running) return;
+      const dt = this.lastT ? Math.min(now - this.lastT, 50) : 16;
+      this.lastT = now;
+      this.step(dt);
+      this.render();
+      this.rafId = requestAnimationFrame(loop);
+    };
+    this.rafId = requestAnimationFrame(loop);
+  }
+
+  stop() {
+    this.running = false;
+    if (this.rafId) cancelAnimationFrame(this.rafId);
+  }
+
+  destroy() {
+    this.stop();
+    if (this.svg && this.svg.parentNode) this.svg.parentNode.removeChild(this.svg);
+  }
+}
+
+// ============================================================
+// MERCURY THERMOMETER
+// ============================================================
+function makeThermometer(container, opts = {}) {
+  const w = opts.w || 110;
+  const h = opts.h || 320;
+  const showCelsius = opts.showCelsius || false;
+  const showFahrenheit = opts.showFahrenheit || false;
+  const showKelvin = opts.showKelvin || false;
+  const showCMarks = !!opts.showCMarks;
+
+  const svg = el('svg', { viewBox: `0 0 ${w} ${h}`, width: w, height: h, style: 'max-width:100%;height:auto' });
+  container.appendChild(svg);
+
+  const tubeX = w/2;
+  const tubeWidth = 16;
+  const bulbRadius = 22;
+  const bulbCy = h - 28;
+  const tubeTopY = 24;
+  const tubeBottomY = bulbCy - bulbRadius + 6;
+
+  // Glass tube
+  el('rect', {
+    x: tubeX - tubeWidth/2, y: tubeTopY,
+    width: tubeWidth, height: tubeBottomY - tubeTopY,
+    rx: tubeWidth/2, fill: '#F5F2EA', stroke: '#999', 'stroke-width': 1.5
+  }, svg);
+  // Bulb
+  el('circle', { cx: tubeX, cy: bulbCy, r: bulbRadius, fill: '#F5F2EA', stroke: '#999', 'stroke-width': 1.5 }, svg);
+
+  // Mercury fill
+  const fillGroup = el('g', {}, svg);
+  el('circle', { cx: tubeX, cy: bulbCy, r: bulbRadius - 4, fill: '#C0392B' }, fillGroup);
+  const mercuryRect = el('rect', {
+    x: tubeX - tubeWidth/2 + 3, y: tubeBottomY,
+    width: tubeWidth - 6, height: 0,
+    fill: '#C0392B'
+  }, fillGroup);
+
+  // Optional scales
+  let cMarksGroup = null, cText = null, fText = null, kText = null;
+  let topMarkY = null, botMarkY = null;
+  let scalesGroup = el('g', {}, svg);
+
+  function setLevel(level) {
+    // level: 0..1 (fraction of tube fill, 0 = empty, 1 = full)
+    level = Math.max(0, Math.min(1, level));
+    const fillH = (tubeBottomY - tubeTopY) * level;
+    mercuryRect.setAttribute('y', tubeBottomY - fillH);
+    mercuryRect.setAttribute('height', fillH);
+  }
+
+  function addCelsiusScale() {
+    const xLabel = tubeX + 14;
+    [0, 25, 50, 75, 100].forEach(c => {
+      // Map: 0°C -> level 0.20 (a bit above bulb), 100°C -> level 0.80
+      const level = 0.20 + (c/100) * 0.60;
+      const y = tubeBottomY - (tubeBottomY - tubeTopY) * level;
+      el('line', { x1: tubeX + tubeWidth/2 + 1, y1: y, x2: tubeX + tubeWidth/2 + 6, y2: y, stroke: '#444', 'stroke-width': 1 }, scalesGroup);
+      const t = el('text', { x: xLabel, y: y + 4, 'font-size': 11, fill: '#444' }, scalesGroup);
+      t.textContent = c + '°C';
+    });
+  }
+
+  function addFahrenheitScale() {
+    const xLabel = tubeX - tubeWidth/2 - 4;
+    [32, 68, 104, 140, 212].forEach(f => {
+      const c = (f - 32) * 5/9;
+      const level = 0.20 + (c/100) * 0.60;
+      const y = tubeBottomY - (tubeBottomY - tubeTopY) * level;
+      el('line', { x1: tubeX - tubeWidth/2 - 1, y1: y, x2: tubeX - tubeWidth/2 - 6, y2: y, stroke: '#444', 'stroke-width': 1 }, scalesGroup);
+      const t = el('text', { x: xLabel, y: y + 4, 'font-size': 11, fill: '#A32D2D', 'text-anchor': 'end' }, scalesGroup);
+      t.textContent = f + '°F';
+    });
+  }
+
+  function addReadout() {
+    cText = el('text', { x: tubeX, y: 14, 'text-anchor': 'middle', 'font-size': 13, 'font-weight': 700, fill: '#444' }, svg);
+    cText.textContent = '';
+    if (showFahrenheit) {
+      cText.setAttribute('x', tubeX - 4);
+      cText.setAttribute('text-anchor', 'end');
+      fText = el('text', { x: tubeX + 4, y: 14, 'text-anchor': 'start', 'font-size': 13, 'font-weight': 700, fill: '#A32D2D' }, svg);
+      fText.textContent = '';
+      const sep = el('text', { x: tubeX, y: 14, 'text-anchor': 'middle', 'font-size': 13, fill: '#999' }, svg);
+      sep.textContent = '|';
+    }
+  }
+
+  if (showCelsius) addCelsiusScale();
+  if (showFahrenheit) addFahrenheitScale();
+  if (showCelsius || showFahrenheit) addReadout();
+
+  // Compute Celsius from level: level = 0.20 + (c/100)*0.60 -> c = (level - 0.20)/0.60 * 100
+  function levelToCelsius(level) {
+    return Math.round(((level - 0.20) / 0.60) * 100);
+  }
+
+  function setLevelAndUpdate(level) {
+    setLevel(level);
+    const c = levelToCelsius(level);
+    if (cText) cText.textContent = c + '°C';
+    if (fText) fText.textContent = (c * 9/5 + 32).toFixed(c % 5 === 0 ? 0 : 1) + '°F';
+  }
+
+  // Methods to add lines (for Celsius animation)
+  let iceLine = null, boilLine = null, divLines = [];
+  function drawIceLine() {
+    const level = 0.20;
+    const y = tubeBottomY - (tubeBottomY - tubeTopY) * level;
+    iceLine = el('line', { x1: tubeX + tubeWidth/2 + 2, y1: y, x2: tubeX + tubeWidth/2 + 32, y2: y, stroke: '#378ADD', 'stroke-width': 2 }, scalesGroup);
+    const t = el('text', { x: tubeX + tubeWidth/2 + 36, y: y + 5, 'font-size': 14, 'font-weight': 700, fill: '#0C447C' }, scalesGroup);
+    t.textContent = '0';
+  }
+  function drawBoilLine() {
+    const level = 0.80;
+    const y = tubeBottomY - (tubeBottomY - tubeTopY) * level;
+    boilLine = el('line', { x1: tubeX + tubeWidth/2 + 2, y1: y, x2: tubeX + tubeWidth/2 + 32, y2: y, stroke: '#E24B4A', 'stroke-width': 2 }, scalesGroup);
+    const t = el('text', { x: tubeX + tubeWidth/2 + 36, y: y + 5, 'font-size': 14, 'font-weight': 700, fill: '#A32D2D' }, scalesGroup);
+    t.textContent = '100';
+  }
+  function drawDivisions() {
+    [10,20,30,40,50,60,70,80,90].forEach(c => {
+      const level = 0.20 + (c/100) * 0.60;
+      const y = tubeBottomY - (tubeBottomY - tubeTopY) * level;
+      const ln = el('line', { x1: tubeX + tubeWidth/2 + 2, y1: y, x2: tubeX + tubeWidth/2 + 8, y2: y, stroke: '#444', 'stroke-width': 1 }, scalesGroup);
+      divLines.push(ln);
+      if (c % 20 === 0) {
+        const t = el('text', { x: tubeX + tubeWidth/2 + 12, y: y + 4, 'font-size': 10, fill: '#444' }, scalesGroup);
+        t.textContent = c;
+      }
+    });
+  }
+
+  return {
+    setLevel: setLevelAndUpdate,
+    setLevelRaw: setLevel,
+    drawIceLine, drawBoilLine, drawDivisions,
+    levelToCelsius,
+    svg
+  };
+}
+
+// ============================================================
+// CHAPTER SETUPS
+// ============================================================
+
+// CH 2 — bowls experiment
+setupCallbacks[1] = () => {
+  const goBtn = freshen('#bowls-go');
+  const resetBtn = freshen('#bowls-reset');
+  const result = $('#bowls-result');
+  const stepText = $('#bowls-step-text');
+  const svg = $('#bowls-svg');
+  let leftHand = null, rightHand = null;
+  let bubbles = [];
+  let step = 0;
+
+  function drawHand(x, y, color, parent) {
+    const g = el('g', { transform: `translate(${x} ${y})` }, parent);
+    el('ellipse', { cx: 0, cy: 0, rx: 14, ry: 18, fill: color, stroke: '#333', 'stroke-width': 1 }, g);
+    el('rect', { x: -4, y: -28, width: 8, height: 12, rx: 3, fill: color, stroke: '#333', 'stroke-width': 1 }, g);
+    el('rect', { x: -10, y: -22, width: 5, height: 10, rx: 2, fill: color, stroke: '#333', 'stroke-width': 1 }, g);
+    el('rect', { x: 5, y: -22, width: 5, height: 10, rx: 2, fill: color, stroke: '#333', 'stroke-width': 1 }, g);
+    return g;
+  }
+
+  function reset() {
+    if (leftHand) leftHand.remove();
+    if (rightHand) rightHand.remove();
+    leftHand = null; rightHand = null;
+    bubbles.forEach(b => b.remove());
+    bubbles = [];
+    result.hidden = true;
+    stepText.textContent = 'Step 1: hands ready';
+    goBtn.textContent = 'Start experiment →';
+    goBtn.style.display = '';
+    resetBtn.style.display = 'none';
+    step = 0;
+  }
+
+  function advance() {
+    step += 1;
+    if (step === 1) {
+      stepText.textContent = '⏱ Step 2: hold one hand in cold, the other in hot — for one minute.';
+      leftHand = drawHand(80, 130, '#85B7EB', svg);
+      rightHand = drawHand(380, 130, '#F09595', svg);
+      goBtn.textContent = 'Next: plunge into lukewarm →';
+    } else if (step === 2) {
+      stepText.textContent = '⏳ Step 3: now plunge BOTH hands into the lukewarm water.';
+      leftHand.setAttribute('transform', 'translate(210 130)');
+      rightHand.setAttribute('transform', 'translate(250 130)');
+      goBtn.textContent = 'Next: what does each hand feel? →';
+    } else if (step === 3) {
+      stepText.textContent = '👀 Step 4: ask each hand what it feels.';
+      const lb = el('g', { transform: 'translate(140 70)' }, svg);
+      el('rect', { x: -50, y: -20, width: 100, height: 28, rx: 14, fill: '#FCEBEB', stroke: '#E24B4A', 'stroke-width': 1.5 }, lb);
+      const lt = el('text', { x: 0, y: -2, 'text-anchor': 'middle', 'font-size': 13, fill: '#791F1F', 'font-weight': 700 }, lb);
+      lt.textContent = 'feels HOT! 🥵';
+      const rb = el('g', { transform: 'translate(320 70)' }, svg);
+      el('rect', { x: -50, y: -20, width: 100, height: 28, rx: 14, fill: '#E6F1FB', stroke: '#378ADD', 'stroke-width': 1.5 }, rb);
+      const rt = el('text', { x: 0, y: -2, 'text-anchor': 'middle', 'font-size': 13, fill: '#0C447C', 'font-weight': 700 }, rb);
+      rt.textContent = 'feels COLD! 🥶';
+      bubbles.push(lb, rb);
+      result.hidden = false;
+      result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      goBtn.style.display = 'none';
+      resetBtn.style.display = '';
+    }
+  }
+
+  reset();
+  goBtn.addEventListener('click', advance);
+  resetBtn.addEventListener('click', reset);
+  cleanupCallbacks[1] = reset;
+};
+
+// CH 4 — first thermometer
+setupCallbacks[3] = () => {
+  const visEl = $('#therm1-vis');
+  visEl.querySelector('svg').remove();
+  const therm = makeThermometer(visEl, { w: 200, h: 320 });
+  const slider = freshen('#therm1-slider');
+  function update() {
+    const v = parseInt(slider.value);
+    therm.setLevelRaw(0.10 + (v/100) * 0.70);
+  }
+  slider.addEventListener('input', update);
+  update();
+  cleanupCallbacks[3] = () => { visEl.innerHTML = '<svg viewBox="0 0 320 320" width="320" height="320" id="therm1-svg"></svg>'; };
+};
+
+// CH 5 — Celsius scale building
+setupCallbacks[4] = () => {
+  const visEl = $('#celsius-vis');
+  visEl.querySelector('svg').remove();
+  const therm = makeThermometer(visEl, { w: 200, h: 320 });
+  therm.setLevelRaw(0.50);
+
+  const text = $('#celsius-text-1');
+  const s1 = freshen('#celsius-step1'), s2 = freshen('#celsius-step2'), s3 = freshen('#celsius-step3');
+
+  function reset() {
+    therm.setLevelRaw(0.50);
+    text.textContent = 'Click step 1 to start.';
+    s1.disabled = false; s2.disabled = true; s3.disabled = true;
+    visEl.innerHTML = '<svg viewBox="0 0 380 320" width="380" height="320" id="celsius-svg"></svg>';
+  }
+
+  s1.addEventListener('click', () => {
+    therm.setLevelRaw(0.20);
+    therm.drawIceLine();
+    text.innerHTML = 'Mercury settles low. Mark this line: <strong>0</strong>. Anywhere on Earth, ice melts at exactly this temperature.';
+    s1.disabled = true; s2.disabled = false;
+  });
+  s2.addEventListener('click', () => {
+    therm.setLevelRaw(0.80);
+    therm.drawBoilLine();
+    text.innerHTML = 'Mercury climbs high. Mark this line: <strong>100</strong>. Anywhere on Earth (at sea level), water boils at exactly this temperature.';
+    s2.disabled = true; s3.disabled = false;
+  });
+  s3.addEventListener('click', () => {
+    therm.drawDivisions();
+    text.innerHTML = 'Divide the gap into 100 equal pieces. <strong>That\'s the Celsius scale.</strong> Now any height between the marks has a number.';
+    s3.disabled = true;
+  });
+  cleanupCallbacks[4] = reset;
+};
+
+// CH 6 — Fahrenheit
+setupCallbacks[5] = () => {
+  const visEl = $('#fahr-vis');
+  visEl.querySelector('svg').remove();
+  const therm = makeThermometer(visEl, { w: 200, h: 320, showCelsius: true, showFahrenheit: true });
+  const slider = freshen('#fahr-slider');
+  function update() {
+    const v = parseInt(slider.value);
+    therm.setLevel(0.20 + (v/100) * 0.60);
+  }
+  slider.addEventListener('input', update);
+  update();
+  cleanupCallbacks[5] = () => { visEl.innerHTML = '<svg viewBox="0 0 380 320" width="380" height="320" id="fahr-svg"></svg>'; };
+};
+
+// CH 7 — convert reveal
+setupCallbacks[6] = () => {
+  const reveals = freshenAll('.convert-table .reveal');
+  let revealed = 0;
+  reveals.forEach(r => {
+    r.addEventListener('click', () => {
+      if (r.classList.contains('revealed')) return;
+      r.textContent = r.dataset.answer;
+      r.classList.add('revealed');
+      revealed++;
+      if (revealed >= 2 && $('#convert-hint').hidden) {
+        $('#convert-hint').hidden = false;
+      }
+    });
+  });
+  freshen('#show-rule').addEventListener('click', () => {
+    $('#convert-rule').hidden = false;
+    $('#show-rule').style.display = 'none';
+  });
+  cleanupCallbacks[6] = () => {
+    reveals.forEach(r => {
+      r.textContent = 'tap to reveal';
+      r.classList.remove('revealed');
+    });
+    revealed = 0;
+    $('#convert-hint').hidden = true;
+    $('#convert-rule').hidden = true;
+    $('#show-rule').style.display = '';
+  };
+};
+
+// CH 8 — zoom in
+let zoomBox = null;
+setupCallbacks[7] = () => {
+  const wrap = $('#zoom-pbox');
+  wrap.innerHTML = '';
+  zoomBox = new WiggleBox(wrap, { w: 360, h: 220, n: 26, initT: 280 });
+  zoomBox.start();
+  const slider = freshen('#zoom-slider');
+  const readout = $('#zoom-readout');
+  function update() {
+    const v = parseInt(slider.value);
+    zoomBox.setTemp(v);
+    readout.textContent = v + ' K';
+  }
+  slider.addEventListener('input', update);
+  slider.value = 280; update();
+  cleanupCallbacks[7] = () => { if (zoomBox) { zoomBox.destroy(); zoomBox = null; } };
+};
+
+// CH 9 — connection
+let connBox = null, connTherm = null;
+setupCallbacks[8] = () => {
+  const pwrap = $('#conn-pbox');
+  const twrap = $('#conn-therm');
+  pwrap.innerHTML = ''; twrap.innerHTML = '';
+  connBox = new WiggleBox(pwrap, { w: 240, h: 240, n: 18, initT: 280 });
+  connBox.start();
+  connTherm = makeThermometer(twrap, { w: 90, h: 240 });
+  const slider = freshen('#conn-slider');
+  function update() {
+    const v = parseInt(slider.value);
+    connBox.setTemp(v);
+    // Map T 20-600K to mercury level 0.10-0.80
+    const lvl = 0.10 + ((v - 20) / 580) * 0.70;
+    connTherm.setLevelRaw(lvl);
+  }
+  slider.addEventListener('input', update);
+  slider.value = 280; update();
+  cleanupCallbacks[8] = () => { if (connBox) { connBox.destroy(); connBox = null; } };
+};
+
+// CH 10 — noisy crowd
+let noisyBox = null;
+setupCallbacks[9] = () => {
+  const wrap = $('#noisy-pbox');
+  wrap.innerHTML = '';
+  noisyBox = new WiggleBox(wrap, { w: 380, h: 280, n: 14, initT: 380, showHalos: true, showAvgArrow: true });
+  noisyBox.start();
+  cleanupCallbacks[9] = () => { if (noisyBox) { noisyBox.destroy(); noisyBox = null; } };
+};
+
+// CH 11 — average
+setupCallbacks[10] = () => {
+  const slider = freshen('#avg-slider');
+  const baseValues = [3, 5, 2, 7, 3];
+  const valueEls = $$('#avg-particles strong');
+  const barEls = $$('#avg-particles .particle-bar');
+  const sumLine = $('.sum-line');
+  function update() {
+    const factor = 0.5 + parseInt(slider.value) / 50;
+    const newVals = baseValues.map(v => Math.max(1, Math.round(v * factor)));
+    newVals.forEach((v, i) => {
+      valueEls[i].textContent = v;
+      barEls[i].style.width = Math.min(100, v * 10) + '%';
+    });
+    const sum = newVals.reduce((a,b) => a+b, 0);
+    const avg = (sum / 5).toFixed(1);
+    sumLine.innerHTML = `<strong>Add them up:</strong> ${newVals.join(' + ')} = <strong>${sum}</strong><br>` +
+      `<strong>Divide by 5:</strong> ${sum} ÷ 5 = <strong style="font-size:24px">${avg}</strong> ← average wiggle = temperature`;
+  }
+  slider.addEventListener('input', update);
+  slider.value = 40; update();
+  cleanupCallbacks[10] = () => {};
+};
+
+// CH 13 — Kelvin
+let kelvinBox = null;
+setupCallbacks[12] = () => {
+  const wrap = $('#kelvin-pbox');
+  wrap.innerHTML = '';
+  kelvinBox = new WiggleBox(wrap, { w: 380, h: 220, n: 24, initT: 280 });
+  kelvinBox.start();
+  const slider = freshen('#kelvin-slider');
+  const readout = $('#kelvin-readout');
+  function update() {
+    const v = parseInt(slider.value);
+    kelvinBox.setTemp(v);
+    readout.textContent = v + ' K';
+  }
+  slider.addEventListener('input', update);
+  slider.value = 280; update();
+  cleanupCallbacks[12] = () => { if (kelvinBox) { kelvinBox.destroy(); kelvinBox = null; } };
+};
+
+// CH 14 — universe tour
+let tourBox = null, tourTherm = null;
+const REFERENCES = [
+  { name: 'Absolute zero',      K: 0,      C: -273,   F: -460 },
+  { name: 'Liquid nitrogen',    K: 77,     C: -196,   F: -321 },
+  { name: 'Dry ice',            K: 195,    C: -78,    F: -109 },
+  { name: 'Water freezes',      K: 273,    C: 0,      F: 32   },
+  { name: 'Room temperature',   K: 293,    C: 20,     F: 68   },
+  { name: 'Body temperature',   K: 310,    C: 37,     F: 98.6 },
+  { name: 'Water boils',        K: 373,    C: 100,    F: 212  },
+  { name: 'Pizza oven',         K: 773,    C: 500,    F: 932  },
+  { name: 'Lava',               K: 1473,   C: 1200,   F: 2192 },
+  { name: 'Sun\'s surface',     K: 5778,   C: 5505,   F: 9941 }
+];
+setupCallbacks[13] = () => {
+  const pwrap = $('#tour-pbox');
+  const twrap = $('#tour-therm');
+  const dotsWrap = $('#ref-dots');
+  pwrap.innerHTML = ''; twrap.innerHTML = ''; dotsWrap.innerHTML = '';
+
+  tourBox = new WiggleBox(pwrap, { w: 280, h: 200, n: 18, initT: 293 });
+  tourBox.start();
+
+  // Build a custom multi-scale thermometer
+  const w = 280, h = 360;
+  const svg = el('svg', { viewBox: `0 0 ${w} ${h}`, width: w, height: h, style: 'max-width:100%;height:auto' });
+  twrap.appendChild(svg);
+  const tubeX = 60, tubeW = 18;
+  const topY = 30, botY = h - 50;
+  el('rect', { x: tubeX - tubeW/2, y: topY, width: tubeW, height: botY - topY, rx: tubeW/2, fill: '#F5F2EA', stroke: '#999', 'stroke-width': 1.5 }, svg);
+  el('circle', { cx: tubeX, cy: botY + 14, r: 22, fill: '#F5F2EA', stroke: '#999', 'stroke-width': 1.5 }, svg);
+  const fillG = el('g', {}, svg);
+  el('circle', { cx: tubeX, cy: botY + 14, r: 18, fill: '#C0392B' }, fillG);
+  const merc = el('rect', { x: tubeX - tubeW/2 + 3, y: botY, width: tubeW - 6, height: 0, fill: '#C0392B' }, fillG);
+
+  // Three rows: label on the left, value on the right (right-aligned)
+  const labelX = tubeX + 22;
+  const valueX = w - 14;
+  const rowY = [56, 92, 128];
+  const kLab = el('text', { x: labelX, y: rowY[0], 'font-size': 13, fill: '#5F5E5A' }, svg);
+  kLab.textContent = 'Kelvin';
+  const cLab = el('text', { x: labelX, y: rowY[1], 'font-size': 13, fill: '#5F5E5A' }, svg);
+  cLab.textContent = 'Celsius';
+  const fLab = el('text', { x: labelX, y: rowY[2], 'font-size': 13, fill: '#5F5E5A' }, svg);
+  fLab.textContent = 'Fahrenheit';
+  const kVal = el('text', { x: valueX, y: rowY[0], 'text-anchor': 'end', 'font-size': 22, 'font-weight': 700, fill: '#534AB7' }, svg);
+  const cVal = el('text', { x: valueX, y: rowY[1], 'text-anchor': 'end', 'font-size': 22, 'font-weight': 700, fill: '#1D9E75' }, svg);
+  const fVal = el('text', { x: valueX, y: rowY[2], 'text-anchor': 'end', 'font-size': 22, 'font-weight': 700, fill: '#A32D2D' }, svg);
+
+  // Display name
+  const nameLabel = el('text', { x: labelX, y: 162, 'font-size': 13, fill: '#5F5E5A', 'font-style': 'italic' }, svg);
+
+  // Map a temperature in K to mercury level (logarithmic so we can fit absolute zero through sun's surface)
+  function kToLevel(K) {
+    // Use log scale: log(K+1) maps to 0..1 across 0..6000 K
+    const minLogK = Math.log(1);   // ~0
+    const maxLogK = Math.log(6000);
+    const logK = Math.log(Math.max(1, K + 1));
+    return Math.max(0.02, Math.min(0.98, (logK - minLogK) / (maxLogK - minLogK)));
+  }
+
+  function setRef(ref) {
+    const lvl = kToLevel(ref.K);
+    const fillH = (botY - topY) * lvl;
+    merc.setAttribute('y', botY - fillH);
+    merc.setAttribute('height', fillH);
+    kVal.textContent = ref.K + ' K';
+    cVal.textContent = ref.C + '°C';
+    fVal.textContent = ref.F + '°F';
+    nameLabel.textContent = ref.name;
+    // Wiggle box temperature (cap upper end for visualization; 0 K freezes particles)
+    const wb_t = Math.min(800, ref.K);
+    if (tourBox) tourBox.setTemp(wb_t);
+  }
+
+  REFERENCES.forEach((ref, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'ref-dot';
+    btn.textContent = ref.name;
+    btn.addEventListener('click', () => {
+      $$('.ref-dot').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      setRef(ref);
+    });
+    dotsWrap.appendChild(btn);
+    if (ref.name === 'Room temperature') btn.classList.add('active');
+  });
+
+  setRef(REFERENCES[4]); // room temp default
+
+  cleanupCallbacks[13] = () => { if (tourBox) { tourBox.destroy(); tourBox = null; } };
+};
+
+// ============================================================
+// CHAPTER NAVIGATION
+// ============================================================
+function showChapter(idx) {
+  if (idx < 0 || idx >= TOTAL) return;
+  // Cleanup previous
+  if (cleanupCallbacks[currentChapter]) cleanupCallbacks[currentChapter]();
+  // Pause any running wiggle boxes from previous setups
+  // (each setup already destroys its box on cleanup)
+
+  currentChapter = idx;
+  chapterEls.forEach((c, i) => c.classList.toggle('active', i === idx));
+  $('#cur-ch').textContent = (idx + 1);
+  $('#progress-fill').style.width = ((idx + 1) / TOTAL * 100) + '%';
+  $('#prev-btn').disabled = (idx === 0);
+  $('#next-btn').disabled = (idx === TOTAL - 1);
+  $('#ch-jump').value = idx;
+  // Setup
+  if (setupCallbacks[idx]) setupCallbacks[idx]();
+  // Scroll to top of chapter
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Build chapter dropdown
+const dd = $('#ch-jump');
+TITLES.forEach((title, i) => {
+  const opt = document.createElement('option');
+  opt.value = i;
+  opt.textContent = `${i+1}. ${title}`;
+  dd.appendChild(opt);
+});
+dd.addEventListener('change', e => showChapter(parseInt(e.target.value)));
+
+$('#prev-btn').addEventListener('click', () => showChapter(currentChapter - 1));
+$('#next-btn').addEventListener('click', () => showChapter(currentChapter + 1));
+
+// Keyboard
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' && currentChapter < TOTAL - 1) showChapter(currentChapter + 1);
+  if (e.key === 'ArrowLeft' && currentChapter > 0) showChapter(currentChapter - 1);
+});
+
+// Init
+showChapter(0);
+</script>
+</body>
+</html>

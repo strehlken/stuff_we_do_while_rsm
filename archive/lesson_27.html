@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RSM Lesson 27 — Homework Quest</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23E8733A'/><text x='16' y='21.5' text-anchor='middle' font-family='sans-serif' font-weight='bold' font-size='12' fill='white'>RSM</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FAFAF7;
+  --card: #FFFFFF;
+  --text: #2D2A24;
+  --text-dim: #7A7568;
+  --accent: #E8733A;
+  --accent-glow: #F4A261;
+  --growth: #6B9F5E;
+  --growth-light: #E8F3E4;
+  --blue: #4A8FBF;
+  --blue-light: #E4F0F8;
+  --purple: #8B6BAE;
+  --purple-light: #F0E8F7;
+  --border: #E8E4DC;
+  --shadow: 0 2px 12px rgba(45,42,36,0.08);
+  --shadow-lg: 0 8px 32px rgba(45,42,36,0.12);
+  --radius: 14px;
+  --radius-sm: 8px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Fredoka', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 17px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ── HEADER ── */
+.header {
+  background: linear-gradient(135deg, var(--accent) 0%, #D4622E 100%);
+  color: white;
+  padding: 28px 32px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.header::after {
+  content: '';
+  position: absolute;
+  top: -40%; left: -10%; width: 120%; height: 180%;
+  background: radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.15) 0%, transparent 60%);
+  pointer-events: none;
+}
+.header h1 { font-size: 32px; font-weight: 700; letter-spacing: -0.5px; position: relative; z-index: 1; }
+.header .sub { font-size: 16px; opacity: 0.85; margin-top: 4px; font-weight: 400; position: relative; z-index: 1; }
+
+/* ── PROGRESS BAR ── */
+.progress-bar {
+  display: flex; gap: 6px; padding: 16px 24px;
+  background: var(--card); border-bottom: 1px solid var(--border);
+}
+.progress-pip {
+  flex: 1; height: 8px; border-radius: 4px;
+  background: var(--border); transition: all 0.3s;
+  cursor: pointer; position: relative;
+}
+.progress-pip:hover { transform: scaleY(1.6); filter: brightness(0.92); }
+.progress-pip.done { background: var(--growth); }
+.progress-pip.active { background: var(--accent); animation: pulse-pip 1.5s infinite; }
+@keyframes pulse-pip { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
+
+.btn-skip {
+  display: block; background: none; border: none;
+  color: var(--text-dim); font-family: 'Fredoka', sans-serif;
+  font-size: 14px; font-weight: 500; cursor: pointer;
+  padding: 8px 0; margin-top: 12px;
+  transition: color 0.2s;
+}
+.btn-skip:hover { color: var(--accent); }
+
+/* ── MAIN LAYOUT ── */
+.container { max-width: 780px; margin: 0 auto; padding: 24px 20px 120px; }
+
+.problem-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px 28px 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+  display: none;
+  animation: slideUp 0.4s ease;
+}
+.problem-card.active { display: block; }
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.problem-number {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--accent); color: white; font-weight: 700;
+  font-size: 18px; margin-bottom: 12px;
+}
+.problem-label {
+  display: inline-block; margin-left: 10px;
+  font-size: 13px; color: var(--text-dim); font-weight: 500;
+  text-transform: uppercase; letter-spacing: 1px;
+  vertical-align: super;
+}
+
+.problem-text {
+  font-size: 18px; line-height: 1.65; margin-bottom: 20px; font-weight: 400;
+}
+
+/* ── INPUT AREA ── */
+.answer-row {
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+}
+.answer-input {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 22px; padding: 12px 16px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  outline: none; width: 200px;
+  transition: border-color 0.2s;
+  background: var(--bg);
+  color: var(--text);
+}
+.answer-input:focus { border-color: var(--accent); }
+.answer-input.correct { border-color: var(--growth); background: var(--growth-light); }
+.answer-input.wrong { border-color: #D94F4F; animation: shake 0.4s; }
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+
+.btn {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 16px; font-weight: 600;
+  padding: 12px 24px; border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer; transition: all 0.2s;
+}
+.btn:active { transform: scale(0.96); }
+.btn-check { background: var(--accent); color: white; }
+.btn-check:hover { background: #D4622E; }
+.btn-growth {
+  background: var(--growth-light); color: var(--growth);
+  border: 2px solid var(--growth);
+  font-size: 15px; padding: 10px 18px;
+  margin-top: 12px;
+}
+.btn-growth:hover { background: var(--growth); color: white; }
+.btn-next {
+  background: var(--blue); color: white;
+  margin-top: 16px;
+}
+.btn-next:hover { background: #3A7AA6; }
+
+/* ── GROWTH PROBLEM ── */
+.growth-zone {
+  margin-top: 16px; padding: 18px 20px;
+  background: var(--growth-light);
+  border-left: 4px solid var(--growth);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  display: none;
+  animation: slideUp 0.35s ease;
+}
+.growth-zone.show { display: block; }
+.growth-zone .growth-label {
+  font-size: 13px; font-weight: 600; color: var(--growth);
+  text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;
+}
+.growth-zone .growth-text { font-size: 17px; margin-bottom: 12px; }
+.growth-zone .answer-row { margin-bottom: 0; }
+
+/* ── FEEDBACK ── */
+.feedback {
+  margin-top: 12px; padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 16px; font-weight: 500;
+  display: none;
+}
+.feedback.show { display: block; animation: slideUp 0.3s ease; }
+.feedback.correct { background: var(--growth-light); color: #3D6B32; }
+.feedback.wrong { background: #FDEAEA; color: #B33A3A; }
+.feedback.neutral { background: var(--blue-light); color: #2E6E96; }
+
+/* ── VENN DIAGRAM (Problem 2) ── */
+.venn-wrapper {
+  position: relative; max-width: 520px; margin: 20px auto;
+}
+.venn-svg { width: 100%; display: block; }
+
+.number-bank {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-bottom: 16px; justify-content: center;
+}
+.num-chip {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 42px; height: 40px; padding: 0 10px;
+  background: var(--card); border: 2px solid var(--border);
+  border-radius: 20px; font-size: 16px; font-weight: 600;
+  cursor: grab; user-select: none; transition: all 0.2s;
+  font-family: 'JetBrains Mono', monospace;
+}
+.num-chip:hover { border-color: var(--accent); transform: scale(1.08); }
+.num-chip.selected {
+  border-color: var(--accent); background: #FFF3E0;
+  transform: scale(1.12); box-shadow: 0 3px 12px rgba(232,115,58,0.3);
+}
+.num-chip.placed { opacity: 0.3; pointer-events: none; transform: scale(0.9); }
+.num-chip:active { cursor: grabbing; }
+
+.venn-drop {
+  position: absolute;
+  display: flex; flex-wrap: wrap; gap: 4px;
+  align-content: flex-start; justify-content: center;
+  padding: 6px 4px; border-radius: 10px;
+  cursor: pointer; transition: background 0.2s;
+}
+.venn-drop:hover { background: rgba(0,0,0,0.04); }
+.venn-drop.drag-over {
+  background: rgba(232,115,58,0.12);
+  outline: 2px dashed var(--accent);
+  outline-offset: -2px;
+}
+.zone-hint {
+  font-size: 11px; color: var(--text-dim); opacity: 0.5;
+  width: 100%; text-align: center; pointer-events: none;
+  font-weight: 500;
+}
+.placed-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px; font-weight: 600;
+  background: white; border-radius: 14px;
+  padding: 2px 9px; border: 1.5px solid var(--border);
+  cursor: pointer; transition: all 0.15s;
+  animation: popIn 0.25s ease;
+  line-height: 1.6;
+}
+.placed-num:hover {
+  border-color: #D94F4F; background: #FDEAEA; transform: scale(1.1);
+}
+@keyframes popIn {
+  0% { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+#dz-left  { left: 13%; top: 27%; width: 24%; height: 52%; }
+#dz-both  { left: 41%; top: 27%; width: 18%; height: 52%; }
+#dz-right { left: 63%; top: 27%; width: 24%; height: 52%; }
+
+/* ── CALENDAR (Problem 3) ── */
+.calendar { margin: 16px auto; max-width: 490px; }
+.cal-header {
+  background: var(--accent); color: white;
+  text-align: center; padding: 10px;
+  font-size: 22px; font-weight: 700;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+}
+.cal-days {
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  border: 1px solid var(--border); border-top: none;
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  overflow: hidden;
+}
+.cal-day-name {
+  text-align: center; padding: 8px 4px;
+  font-size: 14px; font-weight: 600; color: var(--text-dim);
+  background: #F5F3EF;
+}
+.cal-cell {
+  text-align: center; padding: 10px 4px;
+  font-size: 17px; font-weight: 500;
+  border: 1px solid var(--border);
+  cursor: pointer; transition: all 0.15s;
+  position: relative;
+  min-height: 44px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.cal-cell.empty { cursor: default; background: #FAFAF7; }
+.cal-cell:not(.empty):hover { background: #F0EDE6; }
+.cal-cell.laser { background: #D4EDDA; color: #1B5E20; font-weight: 700; }
+.cal-cell.movie { background: #F8D7DA; color: #8B1A1A; font-weight: 700; }
+.cal-cell.both { background: linear-gradient(135deg, #D4EDDA 50%, #F8D7DA 50%); font-weight: 700; }
+.cal-legend {
+  display: flex; gap: 20px; margin-top: 10px; justify-content: center; font-size: 15px;
+}
+.cal-legend span { display: flex; align-items: center; gap: 6px; }
+.legend-dot {
+  width: 14px; height: 14px; border-radius: 50%; display: inline-block;
+}
+
+/* Color mode selector */
+.color-mode {
+  display: flex; gap: 8px; margin-bottom: 12px; justify-content: center;
+}
+.mode-btn {
+  font-family: 'Fredoka', sans-serif;
+  padding: 8px 18px; border-radius: 20px;
+  font-size: 15px; font-weight: 600; cursor: pointer;
+  border: 2px solid var(--border); background: var(--card);
+  transition: all 0.2s;
+}
+.mode-btn.active-green { background: #D4EDDA; border-color: #6B9F5E; color: #1B5E20; }
+.mode-btn.active-red { background: #F8D7DA; border-color: #D94F4F; color: #8B1A1A; }
+.mode-btn.active-eraser { background: #F5F3EF; border-color: var(--text-dim); }
+.mode-btn.active-blue { background: var(--blue-light); border-color: var(--blue); color: #2E6E96; }
+.draw-toolbar { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; align-items: center; }
+
+/* ── REPORT CARD ── */
+.report-card {
+  display: none; background: var(--card);
+  border: 2px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 32px; box-shadow: var(--shadow-lg);
+  animation: slideUp 0.5s ease;
+}
+.report-card.show { display: block; }
+.report-card h2 {
+  font-size: 26px; margin-bottom: 20px;
+  display: flex; align-items: center; gap: 10px;
+}
+.report-table {
+  width: 100%; border-collapse: collapse; font-size: 16px;
+}
+.report-table th, .report-table td {
+  padding: 12px 14px; text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.report-table th {
+  font-size: 13px; text-transform: uppercase;
+  letter-spacing: 1px; color: var(--text-dim); font-weight: 600;
+}
+.badge {
+  display: inline-block; padding: 3px 10px;
+  border-radius: 12px; font-size: 13px; font-weight: 600;
+}
+.badge-gold { background: #FFF3CD; color: #856404; }
+.badge-silver { background: #E8E4DC; color: #5A5549; }
+.badge-green { background: var(--growth-light); color: #3D6B32; }
+
+/* ── CELEBRATION ── */
+.celebrate {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 999;
+}
+.confetti {
+  position: absolute; width: 10px; height: 10px;
+  border-radius: 2px; animation: confetti-fall 1.8s ease-out forwards;
+}
+@keyframes confetti-fall {
+  0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+/* ── MULTI-INPUT GRIDS ── */
+.eq-grid { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
+.eq-row {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  font-family: 'JetBrains Mono', monospace; font-size: 18px;
+}
+.eq-row label { min-width: 22px; font-weight: 600; color: var(--text-dim); }
+.eq-row .eq-text { white-space: nowrap; }
+.eq-row input {
+  font-family: 'JetBrains Mono', monospace; font-size: 18px;
+  padding: 8px 10px; border: 2px solid var(--border); border-radius: var(--radius-sm);
+  outline: none; width: 80px; background: var(--bg); color: var(--text); transition: border-color 0.2s;
+}
+.eq-row input:focus { border-color: var(--accent); }
+.eq-row input.correct { border-color: var(--growth); background: var(--growth-light); }
+.eq-row input.wrong { border-color: #D94F4F; }
+
+.answer-input.sm { width: 100px; font-size: 18px; padding: 10px 12px; }
+
+/* ── COMPARE BUTTONS ── */
+.cmp-btn {
+  font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 700;
+  width: 44px; height: 44px; border: 2px solid var(--border);
+  border-radius: var(--radius-sm); background: var(--card); color: var(--text);
+  cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center;
+}
+.cmp-btn:hover { border-color: var(--accent); background: #FFF3E0; }
+.cmp-btn.selected { border-color: var(--accent); background: #FFF3E0; }
+.cmp-btn.correct { border-color: var(--growth); background: var(--growth-light); }
+.cmp-btn.wrong { border-color: #D94F4F; background: #FDEAEA; }
+
+/* ── TRIANGLES ── */
+.tri-grid { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; margin: 16px 0; }
+.tri-option { border: 3px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; transition: all 0.2s; padding: 4px; }
+.tri-option:hover { border-color: var(--accent); }
+.tri-option.selected { border-color: var(--accent); background: #FFF3E0; }
+.tri-option.correct { border-color: var(--growth); background: var(--growth-light); }
+.tri-option.wrong { border-color: #D94F4F; background: #FDEAEA; }
+
+/* ── NUMBER LINE ── */
+.frac-bank { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; justify-content: center; }
+.frac-chip { padding: 6px 14px; border: 2px solid var(--border); border-radius: 20px; font-size: 17px; font-weight: 600; cursor: pointer; user-select: none; background: var(--card); transition: all 0.2s; font-family: 'JetBrains Mono', monospace; }
+.frac-chip:hover { border-color: var(--accent); transform: scale(1.05); }
+.frac-chip.selected { border-color: var(--accent); background: #FFF3E0; transform: scale(1.1); box-shadow: 0 3px 12px rgba(232,115,58,0.3); }
+.frac-chip.placed { opacity: 0.3; pointer-events: none; transform: scale(0.9); }
+#numline-wrap { margin: 20px 0; }
+#numline-wrap svg { width: 100%; display: block; }
+
+/* ── GRID AREA ── */
+#area-wrap { margin: 16px 0; overflow-x: auto; }
+#area-wrap svg { display: block; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🚀 RSM Lesson 27 Quest</h1>
+  <div class="sub">Solve problems. Grow your thinking. Track your path.</div>
+</div>
+
+<div class="progress-bar" id="progress-bar"></div>
+
+<div class="container">
+
+  <!-- ════════════ PROBLEM 1a ════════════ -->
+  <div class="problem-card active" id="card-1a">
+    <div class="problem-number">1</div>
+    <span class="problem-label">Part A</span>
+    <div class="problem-text">
+      What is the <strong>greatest</strong> 4-digit number that has <strong>three different digits</strong>?
+    </div>
+    <div class="answer-row">
+      <input type="text" class="answer-input" id="ans-1a" placeholder="????" maxlength="4" inputmode="numeric">
+      <button class="btn btn-check" onclick="check1a()">Check</button>
+    </div>
+    <div class="feedback" id="fb-1a"></div>
+    <button class="btn btn-growth" id="grow-1a-btn" onclick="showGrowth('1a')">🌱 I need a stepping stone…</button>
+
+    <div class="growth-zone" id="growth-1a-1">
+      <div class="growth-label">🌱 Growth Problem</div>
+      <div class="growth-text">What is the <strong>greatest 2-digit number</strong> that uses <strong>two different digits</strong>?</div>
+      <div class="answer-row">
+        <input type="text" class="answer-input" id="gans-1a-1" maxlength="2" placeholder="??" inputmode="numeric">
+        <button class="btn btn-check" onclick="checkGrowth('1a',1,'98')">Check</button>
+      </div>
+      <div class="feedback" id="gfb-1a-1"></div>
+    </div>
+
+    <div class="growth-zone" id="growth-1a-2">
+      <div class="growth-label">🌱 Growth Problem</div>
+      <div class="growth-text">Now: what's the <strong>greatest 3-digit number</strong> with <strong>two different digits</strong>? (You can repeat a digit!)</div>
+      <div class="answer-row">
+        <input type="text" class="answer-input" id="gans-1a-2" maxlength="3" placeholder="???" inputmode="numeric">
+        <button class="btn btn-check" onclick="checkGrowth('1a',2,'998')">Check</button>
+      </div>
+      <div class="feedback" id="gfb-1a-2"></div>
+    </div>
+
+    <div class="growth-zone" id="growth-1a-3">
+      <div class="growth-label">🌿 Insight</div>
+      <div class="growth-text">Nice! Notice: you want the <strong>biggest digits possible</strong> in the <strong>leftmost places</strong>, and you can <strong>repeat</strong> your biggest digit. Now go back to the main problem — a 4-digit number with exactly 3 different digits!</div>
+    </div>
+
+    <button class="btn btn-next" id="next-1a" style="display:none" onclick="goTo('1b')">Next → Problem 1b</button>
+  </div>
+
+  <!-- ════════════ PROBLEM 1b ════════════ -->
+  <div class="problem-card" id="card-1b">
+    <div class="problem-number">1</div>
+    <span class="problem-label">Part B</span>
+    <div class="problem-text">
+      What is the <strong>least</strong> 4-digit number that has <strong>three different digits</strong>?
+    </div>
+    <div class="answer-row">
+      <input type="text" class="answer-input" id="ans-1b" placeholder="????" maxlength="4" inputmode="numeric">
+      <button class="btn btn-check" onclick="check1b()">Check</button>
+    </div>
+    <div class="feedback" id="fb-1b"></div>
+    <button class="btn btn-growth" id="grow-1b-btn" onclick="showGrowth('1b')">🌱 I need a stepping stone…</button>
+
+    <div class="growth-zone" id="growth-1b-1">
+      <div class="growth-label">🌱 Growth Problem</div>
+      <div class="growth-text">What is the <strong>least 2-digit number</strong> that uses <strong>two different digits</strong>?</div>
+      <div class="answer-row">
+        <input type="text" class="answer-input" id="gans-1b-1" maxlength="2" placeholder="??" inputmode="numeric">
+        <button class="btn btn-check" onclick="checkGrowth('1b',1,'10')">Check</button>
+      </div>
+      <div class="feedback" id="gfb-1b-1"></div>
+    </div>
+
+    <div class="growth-zone" id="growth-1b-2">
+      <div class="growth-label">🌱 Growth Problem</div>
+      <div class="growth-text">What's the <strong>least 3-digit number</strong> with <strong>two different digits</strong>? Think about what the first digit must be…</div>
+      <div class="answer-row">
+        <input type="text" class="answer-input" id="gans-1b-2" maxlength="3" placeholder="???" inputmode="numeric">
+        <button class="btn btn-check" onclick="checkGrowth('1b',2,'100')">Check</button>
+      </div>
+      <div class="feedback" id="gfb-1b-2"></div>
+    </div>
+
+    <div class="growth-zone" id="growth-1b-3">
+      <div class="growth-label">🌿 Insight</div>
+      <div class="growth-text">Good — for the <em>smallest</em>, the leading digit must be <strong>1</strong> (can't be 0!), then fill the rest with the <strong>smallest digits</strong> you can. Now try the 4-digit version with exactly 3 different digits!</div>
+    </div>
+
+    <button class="btn btn-next" id="next-1b" style="display:none" onclick="goTo('2')">Next → Problem 2</button>
+  </div>
+
+  <!-- ════════════ PROBLEM 2 ════════════ -->
+  <div class="problem-card" id="card-2">
+    <div class="problem-number">2</div>
+    <span class="problem-label">Venn Diagram</span>
+    <div class="problem-text">
+      From the first 30 natural numbers, place each <strong>multiple of 3 or 5</strong> into the Venn diagram. Click a number, then click where it belongs. Click a placed number to remove it.
+    </div>
+
+    <button class="btn btn-growth" id="grow-2-btn" onclick="showGrowth('2')" style="margin-bottom: 12px;">🌱 I need a stepping stone…</button>
+
+    <div class="growth-zone" id="growth-2-1">
+      <div class="growth-label">🌱 Growth Problem</div>
+      <div class="growth-text">How do you check if a number is a <strong>multiple of 3</strong>? Try these: Is <strong>12</strong> a multiple of 3? Is <strong>16</strong>?</div>
+      <div class="answer-row">
+        <span style="font-size:15px;margin-right:4px;">12 ÷ 3 =</span>
+        <input type="text" class="answer-input" id="gans-2-1" maxlength="2" placeholder="?" style="width:70px" inputmode="numeric">
+        <button class="btn btn-check" onclick="checkGrowth('2',1,'4')">Check</button>
+      </div>
+      <div class="feedback" id="gfb-2-1"></div>
+    </div>
+
+    <div class="growth-zone" id="growth-2-2">
+      <div class="growth-label">🌱 Growth Problem</div>
+      <div class="growth-text">Is <strong>15</strong> a multiple of 3, a multiple of 5, or <strong>both</strong>? Type "3", "5", or "both".</div>
+      <div class="answer-row">
+        <input type="text" class="answer-input" id="gans-2-2" maxlength="4" placeholder="?" style="width:100px">
+        <button class="btn btn-check" onclick="checkGrowth('2',2,'both')">Check</button>
+      </div>
+      <div class="feedback" id="gfb-2-2"></div>
+    </div>
+
+    <div class="growth-zone" id="growth-2-3">
+      <div class="growth-label">🌿 Insight</div>
+      <div class="growth-text">Numbers that are multiples of <em>both</em> 3 and 5 go in the <strong>middle overlap</strong>. Those are multiples of 15! Now sort all the multiples.</div>
+    </div>
+
+    <div class="number-bank" id="num-bank"></div>
+
+    <div class="venn-wrapper">
+      <svg class="venn-svg" viewBox="0 0 500 300">
+        <defs>
+          <clipPath id="clip-left"><circle cx="180" cy="155" r="115"/></clipPath>
+          <clipPath id="clip-right"><circle cx="320" cy="155" r="115"/></clipPath>
+        </defs>
+        <circle cx="180" cy="155" r="115" fill="rgba(74,143,191,0.1)"/>
+        <circle cx="320" cy="155" r="115" fill="rgba(139,107,174,0.1)"/>
+        <circle cx="320" cy="155" r="115" clip-path="url(#clip-left)" fill="rgba(100,90,160,0.08)"/>
+        <circle cx="180" cy="155" r="115" fill="none" stroke="#4A8FBF" stroke-width="2.5"/>
+        <circle cx="320" cy="155" r="115" fill="none" stroke="#8B6BAE" stroke-width="2.5"/>
+        <text x="115" y="38" text-anchor="middle" fill="#4A8FBF" font-weight="600" font-size="14" font-family="Fredoka, sans-serif">Multiples of 3</text>
+        <text x="385" y="38" text-anchor="middle" fill="#8B6BAE" font-weight="600" font-size="14" font-family="Fredoka, sans-serif">Multiples of 5</text>
+      </svg>
+      <div class="venn-drop" id="dz-left" onclick="placeNumber('left')" ondragover="dragOver(event)" ondrop="dropNum(event,'left')" ondragleave="dragLeave(event)">
+        <span class="zone-hint">3 only</span>
+      </div>
+      <div class="venn-drop" id="dz-both" onclick="placeNumber('both')" ondragover="dragOver(event)" ondrop="dropNum(event,'both')" ondragleave="dragLeave(event)">
+        <span class="zone-hint">Both</span>
+      </div>
+      <div class="venn-drop" id="dz-right" onclick="placeNumber('right')" ondragover="dragOver(event)" ondrop="dropNum(event,'right')" ondragleave="dragLeave(event)">
+        <span class="zone-hint">5 only</span>
+      </div>
+    </div>
+
+    <div class="answer-row" style="justify-content:center">
+      <button class="btn btn-check" onclick="checkVenn()">Check My Diagram</button>
+    </div>
+    <div class="feedback" id="fb-2"></div>
+    <button class="btn btn-next" id="next-2" style="display:none" onclick="goTo('3')">Next → Problem 3</button>
+  </div>
+
+  <!-- ════════════ PROBLEM 3 ════════════ -->
+  <div class="problem-card" id="card-3">
+    <div class="problem-number">3</div>
+    <span class="problem-label">Calendar</span>
+    <div class="problem-text">
+      A science center has a <strong>laser show</strong> on June 2 (repeats every 2nd day) and a <strong>movie</strong> on June 5 (repeats every 5th night). Select a color mode below, then click days to mark them. Find the dates with <strong>both</strong>!
+    </div>
+
+    <button class="btn btn-growth" id="grow-3-btn" onclick="showGrowth('3')" style="margin-bottom: 12px;">🌱 I need a stepping stone…</button>
+
+    <div class="growth-zone" id="growth-3-1">
+      <div class="growth-label">🌱 Growth Problem</div>
+      <div class="growth-text">The laser show starts June 2 and repeats <strong>every 2 days</strong>. What are the <strong>next 3</strong> laser show dates after June 2? Type them separated by commas.</div>
+      <div class="answer-row">
+        <input type="text" class="answer-input" id="gans-3-1" placeholder="e.g. 4,6,8" style="width:160px">
+        <button class="btn btn-check" onclick="checkGrowth('3',1,'4,6,8')">Check</button>
+      </div>
+      <div class="feedback" id="gfb-3-1"></div>
+    </div>
+
+    <div class="growth-zone" id="growth-3-2">
+      <div class="growth-label">🌱 Growth Problem</div>
+      <div class="growth-text">The movie starts June 5 and repeats <strong>every 5 days</strong>. What are the <strong>next 2</strong> movie dates after June 5?</div>
+      <div class="answer-row">
+        <input type="text" class="answer-input" id="gans-3-2" placeholder="e.g. 10,15" style="width:140px">
+        <button class="btn btn-check" onclick="checkGrowth('3',2,'10,15')">Check</button>
+      </div>
+      <div class="feedback" id="gfb-3-2"></div>
+    </div>
+
+    <div class="growth-zone" id="growth-3-3">
+      <div class="growth-label">🌿 Insight</div>
+      <div class="growth-text">Laser shows are on all <strong>even</strong> dates (2, 4, 6 …). Movies are on 5, 10, 15, 20, 25, 30. Now color the calendar and find overlaps!</div>
+    </div>
+
+    <div class="color-mode">
+      <button class="mode-btn active-green" id="mode-laser" onclick="setCalMode('laser')">🟢 Laser Show</button>
+      <button class="mode-btn" id="mode-movie" onclick="setCalMode('movie')">🔴 Movie</button>
+      <button class="mode-btn" id="mode-erase" onclick="setCalMode('erase')">🧹 Eraser</button>
+    </div>
+
+    <div class="calendar">
+      <div class="cal-header">JUNE</div>
+      <div class="cal-days" id="cal-grid"></div>
+    </div>
+
+    <div class="cal-legend">
+      <span><span class="legend-dot" style="background:#D4EDDA;border:1px solid #6B9F5E"></span> Laser</span>
+      <span><span class="legend-dot" style="background:#F8D7DA;border:1px solid #D94F4F"></span> Movie</span>
+      <span><span class="legend-dot" style="background:linear-gradient(135deg,#D4EDDA 50%,#F8D7DA 50%);border:1px solid #888"></span> Both</span>
+    </div>
+
+    <div style="margin-top:16px">
+      <div style="font-size:16px;font-weight:600;margin-bottom:8px;">Dates with BOTH a show and a movie:</div>
+      <div class="answer-row">
+        <input type="text" class="answer-input" id="ans-3" placeholder="e.g. 10,20,30" style="width:220px">
+        <button class="btn btn-check" onclick="check3()">Check</button>
+      </div>
+    </div>
+    <div class="feedback" id="fb-3"></div>
+    <button class="btn btn-next" id="next-3" style="display:none" onclick="goTo('4')">Next → Problem 4</button>
+  </div>
+
+
+  <!-- ════ PROBLEM 4 ════ -->
+  <div class="problem-card" id="card-4">
+    <div class="problem-number">4</div><span class="problem-label">Proportions</span>
+    <div class="problem-text"><strong>a)</strong> Two game cards cost $6.50. How much do <strong>4</strong> game cards cost?<br><strong>b)</strong> Ms. Clever paid $6.00 for 10 notebooks. How much do <strong>5</strong> cost?</div>
+    <button class="btn btn-growth" id="grow-4-btn" onclick="showGrowth('4')" style="margin-bottom:12px">🌱 I need a stepping stone…</button>
+    <div class="growth-zone" id="growth-4-1"><div class="growth-label">🌱 Growth Problem</div><div class="growth-text">If 2 apples cost $4, how much do 4 apples cost? (4 is how many groups of 2?)</div><div class="answer-row"><span style="font-size:15px">$</span><input type="text" class="answer-input sm" id="gans-4-1" placeholder="?" inputmode="numeric"><button class="btn btn-check" onclick="checkGrowthMulti('4',1,['8','8.00'])">Check</button></div><div class="feedback" id="gfb-4-1"></div></div>
+    <div class="growth-zone" id="growth-4-2"><div class="growth-label">🌱 Growth Problem</div><div class="growth-text">If 10 stickers cost $20, how much do 5 cost? (5 is what fraction of 10?)</div><div class="answer-row"><span style="font-size:15px">$</span><input type="text" class="answer-input sm" id="gans-4-2" placeholder="?" inputmode="numeric"><button class="btn btn-check" onclick="checkGrowthMulti('4',2,['10','10.00'])">Check</button></div><div class="feedback" id="gfb-4-2"></div></div>
+    <div class="growth-zone" id="growth-4-3"><div class="growth-label">🌿 Insight</div><div class="growth-text">2→4 means <strong>double</strong>. 10→5 means <strong>halve</strong>. Do the same to the price!</div></div>
+    <div class="eq-grid">
+      <div class="eq-row"><label>a)</label><span class="eq-text">4 game cards = $</span><input id="ans-4a" placeholder="?" inputmode="decimal"></div>
+      <div class="eq-row"><label>b)</label><span class="eq-text">5 notebooks = $</span><input id="ans-4b" placeholder="?" inputmode="decimal"></div>
+    </div>
+    <button class="btn btn-check" onclick="check4()">Check</button>
+    <div class="feedback" id="fb-4"></div>
+    <button class="btn btn-next" id="next-4" style="display:none" onclick="goTo('5')">Next → Problem 5</button>
+  </div>
+
+  <!-- ════ PROBLEM 5 ════ -->
+  <div class="problem-card" id="card-5">
+    <div class="problem-number">5</div><span class="problem-label">Rates</span>
+    <div class="problem-text">Bella works at the same pace and can solve <strong>5 problems in one hour</strong>.</div>
+    <button class="btn btn-growth" id="grow-5-btn" onclick="showGrowth('5')" style="margin-bottom:12px">🌱 I need a stepping stone…</button>
+    <div class="growth-zone" id="growth-5-1"><div class="growth-label">🌱 Growth Problem</div><div class="growth-text">How long does it take Bella to solve <strong>1 problem</strong>? (fraction of an hour)</div><div class="answer-row"><input type="text" class="answer-input sm" id="gans-5-1" placeholder="?"><button class="btn btn-check" onclick="checkGrowthMulti('5',1,['1/5'])">Check</button></div><div class="feedback" id="gfb-5-1"></div></div>
+    <div class="growth-zone" id="growth-5-2"><div class="growth-label">🌱 Growth Problem</div><div class="growth-text">If 5 problems = 1 hour, how many hours for 15 problems?</div><div class="answer-row"><input type="text" class="answer-input sm" id="gans-5-2" placeholder="?" inputmode="numeric"><button class="btn btn-check" onclick="checkGrowth('5',2,'3')">Check</button></div><div class="feedback" id="gfb-5-2"></div></div>
+    <div class="growth-zone" id="growth-5-3"><div class="growth-label">🌿 Insight</div><div class="growth-text">Each problem = <strong>1/5 hour</strong>. So m problems = <strong>m/5 hours</strong>!</div></div>
+    <div class="eq-grid">
+      <div class="eq-row"><label>a)</label><span class="eq-text">10 problems →</span><input id="ans-5a" placeholder="? hours"></div>
+      <div class="eq-row"><label>b)</label><span class="eq-text">2 problems →</span><input id="ans-5b" placeholder="? hours"></div>
+      <div class="eq-row"><label>c)</label><span class="eq-text">m problems →</span><input id="ans-5c" placeholder="? hours"></div>
+    </div>
+    <button class="btn btn-check" onclick="check5()">Check</button>
+    <div class="feedback" id="fb-5"></div>
+    <button class="btn btn-next" id="next-5" style="display:none" onclick="goTo('6')">Next → Problem 6</button>
+  </div>
+
+  <!-- ════ PROBLEM 6 ════ -->
+  <div class="problem-card" id="card-6">
+    <div class="problem-number">6</div><span class="problem-label">Find x</span>
+    <div class="problem-text">Find <strong>x</strong> in each equation.</div>
+    <button class="btn btn-growth" id="grow-6-btn" onclick="showGrowth('6')" style="margin-bottom:12px">🌱 I need a stepping stone…</button>
+    <div class="growth-zone" id="growth-6-1"><div class="growth-label">🌱 Growth Problem</div><div class="growth-text">If 5 · x = 20, what is x?</div><div class="answer-row"><input type="text" class="answer-input sm" id="gans-6-1" placeholder="?" inputmode="numeric"><button class="btn btn-check" onclick="checkGrowth('6',1,'4')">Check</button></div><div class="feedback" id="gfb-6-1"></div></div>
+    <div class="growth-zone" id="growth-6-2"><div class="growth-label">🌱 Growth Problem</div><div class="growth-text">If 10 · x = 5, what is x? (It's a fraction!)</div><div class="answer-row"><input type="text" class="answer-input sm" id="gans-6-2" placeholder="?"><button class="btn btn-check" onclick="checkGrowthMulti('6',2,['1/2','0.5'])">Check</button></div><div class="feedback" id="gfb-6-2"></div></div>
+    <div class="growth-zone" id="growth-6-3"><div class="growth-label">🌿 Insight</div><div class="growth-text">To find x, <strong>divide both sides by the multiplier</strong>. 30·x=90 → x=90÷30!</div></div>
+    <div class="eq-grid">
+      <div class="eq-row"><label>a)</label><span class="eq-text">30·x = 120 → x =</span><input id="ans-6a" placeholder="?"></div>
+      <div class="eq-row"><label>b)</label><span class="eq-text">30·x = 60 → x =</span><input id="ans-6b" placeholder="?"></div>
+      <div class="eq-row"><label>c)</label><span class="eq-text">30·x = 90 → x =</span><input id="ans-6c" placeholder="?"></div>
+      <div class="eq-row"><label>d)</label><span class="eq-text">30·x = 30 → x =</span><input id="ans-6d" placeholder="?"></div>
+      <div class="eq-row"><label>e)</label><span class="eq-text">30·x = 10 → x =</span><input id="ans-6e" placeholder="?"></div>
+      <div class="eq-row"><label>f)</label><span class="eq-text">30·x = 3 → x =</span><input id="ans-6f" placeholder="?"></div>
+    </div>
+    <button class="btn btn-check" onclick="check6()">Check</button>
+    <div class="feedback" id="fb-6"></div>
+    <button class="btn btn-next" id="next-6" style="display:none" onclick="goTo('7')">Next → Problem 7</button>
+  </div>
+
+  <!-- ════ PROBLEM 7 ════ -->
+  <div class="problem-card" id="card-7">
+    <div class="problem-number">7</div><span class="problem-label">Triangles</span>
+    <div class="problem-text"><strong>a)</strong> Which triangle does <strong>not belong</strong>? Click it.</div>
+    <button class="btn btn-growth" id="grow-7-btn" onclick="showGrowth('7')" style="margin-bottom:12px">🌱 I need a stepping stone…</button>
+    <div class="growth-zone" id="growth-7-1"><div class="growth-label">🌱 Growth Problem</div><div class="growth-text">A <strong>right triangle</strong> has one 90° angle (a square corner). Look for the "L" shape at a corner.</div><div class="feedback" id="gfb-7-1" style="display:block;background:var(--blue-light);color:#2E6E96">Check each triangle for square corners.</div></div>
+    <div class="growth-zone" id="growth-7-2"><div class="growth-label">🌱 Growth Problem</div><div class="growth-text">How many of the 4 triangles have a right angle?</div><div class="answer-row"><input type="text" class="answer-input sm" id="gans-7-2" placeholder="?" inputmode="numeric"><button class="btn btn-check" onclick="checkGrowth('7',2,'3')">Check</button></div><div class="feedback" id="gfb-7-2"></div></div>
+    <div class="growth-zone" id="growth-7-3"><div class="growth-label">🌿 Insight</div><div class="growth-text">Three are right triangles. The odd one out <strong>isn't</strong>!</div></div>
+    <div class="tri-grid" id="tri-grid"></div>
+    <div class="feedback" id="fb-7"></div>
+    <button class="btn btn-next" id="next-7" style="display:none" onclick="goTo('8')">Next → Problem 8</button>
+  </div>
+
+  <!-- ════ PROBLEM 8 ════ -->
+  <div class="problem-card" id="card-8">
+    <div class="problem-number">8</div><span class="problem-label">Compare</span>
+    <div class="problem-text">Compare without simplifying. <em>x</em> is a natural number.</div>
+    <button class="btn btn-growth" id="grow-8-btn" onclick="showGrowth('8')" style="margin-bottom:12px">🌱 I need a stepping stone…</button>
+    <div class="growth-zone" id="growth-8-1"><div class="growth-label">🌱 Growth Problem</div><div class="growth-text">What is 10 + (3 + 2)? And 10 + 3 + 2? Same or different?</div><div class="answer-row"><input type="text" class="answer-input sm" id="gans-8-1" placeholder="both = ?" inputmode="numeric"><button class="btn btn-check" onclick="checkGrowth('8',1,'15')">Check</button></div><div class="feedback" id="gfb-8-1"></div></div>
+    <div class="growth-zone" id="growth-8-2"><div class="growth-label">🌱 Growth Problem</div><div class="growth-text">What is 10 − (3 + 2)? Is it the same as 10 − 3 + 2?</div><div class="answer-row"><span style="font-size:14px">10−(3+2)=</span><input type="text" class="answer-input sm" id="gans-8-2" placeholder="?" style="width:60px" inputmode="numeric"><button class="btn btn-check" onclick="checkGrowth('8',2,'5')">Check</button></div><div class="feedback" id="gfb-8-2"></div></div>
+    <div class="growth-zone" id="growth-8-3"><div class="growth-label">🌿 Insight</div><div class="growth-text"><strong>Minus before parentheses flips signs!</strong> a−(b+c) = a−b−c ≠ a−b+c</div></div>
+    <div class="eq-grid" id="cmp-grid"></div>
+    <button class="btn btn-check" onclick="check8()">Check</button>
+    <div class="feedback" id="fb-8"></div>
+    <button class="btn btn-next" id="next-8" style="display:none" onclick="goTo('9')">Next → Problem 9</button>
+  </div>
+
+  <!-- ════ PROBLEM 9 ════ -->
+  <div class="problem-card" id="card-9">
+    <div class="problem-number">9</div><span class="problem-label">Efficient Way</span>
+    <div class="problem-text">Solve in the <strong>most efficient way</strong> (distributive property).</div>
+    <button class="btn btn-growth" id="grow-9-btn" onclick="showGrowth('9')" style="margin-bottom:12px">🌱 I need a stepping stone…</button>
+    <div class="growth-zone" id="growth-9-1"><div class="growth-label">🌱 Growth Problem</div><div class="growth-text">3·4 + 3·6 = 3·(4+6) = 3·<strong>?</strong> = <strong>?</strong></div><div class="answer-row"><span style="font-size:14px">3×</span><input type="text" class="answer-input sm" id="gans-9-1" placeholder="?" style="width:60px" inputmode="numeric"><span style="font-size:14px">=</span><input type="text" class="answer-input sm" id="gans-9-1b" placeholder="?" style="width:70px" inputmode="numeric"><button class="btn btn-check" onclick="checkGrowth9()">Check</button></div><div class="feedback" id="gfb-9-1"></div></div>
+    <div class="growth-zone" id="growth-9-2"><div class="growth-label">🌱 Growth Problem</div><div class="growth-text">5·8 − 5·3 = 5·(8−3) = 5·<strong>?</strong></div><div class="answer-row"><span style="font-size:14px">5×</span><input type="text" class="answer-input sm" id="gans-9-2" placeholder="?" style="width:60px" inputmode="numeric"><button class="btn btn-check" onclick="checkGrowth('9',2,'5')">Check</button></div><div class="feedback" id="gfb-9-2"></div></div>
+    <div class="growth-zone" id="growth-9-3"><div class="growth-label">🌿 Insight</div><div class="growth-text"><strong>a·c + b·c = (a+b)·c</strong> — factor out the common number!</div></div>
+    <div class="eq-grid" id="dist-grid"></div>
+    <button class="btn btn-check" onclick="check9()">Check</button>
+    <div class="feedback" id="fb-9"></div>
+    <button class="btn btn-next" id="next-9" style="display:none" onclick="goTo('10')">Next → Problem 10</button>
+  </div>
+
+  <!-- ════ PROBLEM 10 ════ -->
+  <div class="problem-card" id="card-10">
+    <div class="problem-number">10</div><span class="problem-label">Populations</span>
+    <div class="problem-text">Use column computations to answer:</div>
+    <div style="margin:12px 0 16px;padding:14px 18px;background:var(--bg);border-radius:var(--radius-sm);font-family:'JetBrains Mono',monospace;font-size:15px;line-height:2">
+      🇨🇳 China: <strong>1,397,715,000</strong><br>🇮🇳 India: <strong>1,366,417,750</strong><br>🇺🇸 US: <strong>328,239,520</strong><br>🇮🇱 Israel: <strong>8,859,660</strong><br>🇮🇸 Iceland: <strong>344,250</strong>
+    </div>
+    <button class="btn btn-growth" id="grow-10-btn" onclick="showGrowth('10')" style="margin-bottom:12px">🌱 I need a stepping stone…</button>
+    <div class="growth-zone" id="growth-10-1"><div class="growth-label">🌱 Growth Problem</div><div class="growth-text">"How much greater" means: add or subtract?</div><div class="answer-row"><input type="text" class="answer-input sm" id="gans-10-1" placeholder="?"><button class="btn btn-check" onclick="checkGrowthMulti('10',1,['subtract','subtraction','minus','-'])">Check</button></div><div class="feedback" id="gfb-10-1"></div></div>
+    <div class="growth-zone" id="growth-10-2"><div class="growth-label">🌱 Growth Problem</div><div class="growth-text">Practice: 500 − 347 = ?</div><div class="answer-row"><input type="text" class="answer-input sm" id="gans-10-2" placeholder="?" inputmode="numeric"><button class="btn btn-check" onclick="checkGrowth('10',2,'153')">Check</button></div><div class="feedback" id="gfb-10-2"></div></div>
+    <div class="growth-zone" id="growth-10-3"><div class="growth-label">🌿 Insight</div><div class="growth-text">"How much greater" = subtract. For c, add Israel+Iceland first, then subtract from India.</div></div>
+    <div class="eq-grid">
+      <div class="eq-row" style="flex-direction:column;align-items:flex-start;gap:4px"><span style="font-size:15px">a) How much greater is China than India?</span><input id="ans-10a" placeholder="?" style="width:180px" inputmode="numeric"></div>
+      <div class="eq-row" style="flex-direction:column;align-items:flex-start;gap:4px"><span style="font-size:15px">b) How much less is Israel than the US?</span><input id="ans-10b" placeholder="?" style="width:180px" inputmode="numeric"></div>
+      <div class="eq-row" style="flex-direction:column;align-items:flex-start;gap:4px"><span style="font-size:15px">c) How much greater is India than Israel + Iceland combined?</span><input id="ans-10c" placeholder="?" style="width:180px" inputmode="numeric"></div>
+    </div>
+    <button class="btn btn-check" onclick="check10()">Check</button>
+    <div class="feedback" id="fb-10"></div>
+    <button class="btn btn-next" id="next-10" style="display:none" onclick="goTo('11')">Next → Problem 11</button>
+  </div>
+
+  <!-- ════ PROBLEM 11 ════ -->
+  <div class="problem-card" id="card-11">
+    <div class="problem-number">11</div><span class="problem-label">Number Line</span>
+    <div class="problem-text">Mark each fraction on the number line (0 to 1). Click a fraction, then click the line.</div>
+    <button class="btn btn-growth" id="grow-11-btn" onclick="showGrowth('11')" style="margin-bottom:12px">🌱 I need a stepping stone…</button>
+    <div class="growth-zone" id="growth-11-1"><div class="growth-label">🌱 Growth Problem</div><div class="growth-text">Where does 1/2 go? Exactly in the <strong>middle</strong>.</div><div class="feedback" id="gfb-11-1" style="display:block;background:var(--blue-light);color:#2E6E96">1/4 is halfway between 0 and 1/2.</div></div>
+    <div class="growth-zone" id="growth-11-2"><div class="growth-label">🌱 Growth Problem</div><div class="growth-text">Simplify 2/6. Are 2/6 and 1/3 the same?</div><div class="answer-row"><input type="text" class="answer-input sm" id="gans-11-2" placeholder="?" style="width:80px"><button class="btn btn-check" onclick="checkGrowthMulti('11',2,['1/3','yes'])">Check</button></div><div class="feedback" id="gfb-11-2"></div></div>
+    <div class="growth-zone" id="growth-11-3"><div class="growth-label">🌿 Insight</div><div class="growth-text">2/6 = 1/3 so they go at the <strong>same spot</strong>!</div></div>
+    <div class="frac-bank" id="frac-bank"></div>
+    <div id="numline-wrap"></div>
+    <div style="text-align:center;margin-top:8px"><button class="btn btn-check" onclick="check11()">Check Placements</button></div>
+    <div class="feedback" id="fb-11"></div>
+    <button class="btn btn-next" id="next-11" style="display:none" onclick="goTo('12')">Next → Problem 12</button>
+  </div>
+
+  <!-- ════ PROBLEM 12 ════ -->
+  <div class="problem-card" id="card-12">
+    <div class="problem-number">12</div><span class="problem-label">Area</span>
+    <div class="problem-text"><strong>Draw and label.</strong> Shape <strong>A</strong> (orange) is on the grid. Use ✏️ <em>Draw outline</em> to trace shapes at grid intersections, or 🔳 <em>Shade</em> to fill squares.</div>
+    <button class="btn btn-growth" id="grow-12-btn" onclick="showGrowth('12')" style="margin-bottom:12px">🌱 I need a stepping stone…</button>
+    <div class="growth-zone" id="growth-12-1"><div class="growth-label">🌱 Growth Problem</div><div class="growth-text">Shape A is a 4×4 square with a triangle moved. The area doesn't change! What is the area of a 4×4 square?</div><div class="answer-row"><input type="text" class="answer-input sm" id="gans-12-1" placeholder="?" inputmode="numeric"><button class="btn btn-check" onclick="checkGrowth('12',1,'16')">Check</button></div><div class="feedback" id="gfb-12-1"></div></div>
+    <div class="growth-zone" id="growth-12-2"><div class="growth-label">🌱 Growth Problem</div><div class="growth-text">If area = 16, what is half of 16?</div><div class="answer-row"><input type="text" class="answer-input sm" id="gans-12-2" placeholder="?" inputmode="numeric"><button class="btn btn-check" onclick="checkGrowth('12',2,'8')">Check</button></div><div class="feedback" id="gfb-12-2"></div></div>
+    <div class="growth-zone" id="growth-12-3"><div class="growth-label">🌿 Insight</div><div class="growth-text">A = 16 sq units. Now: 2×16, 3×16, 16÷2, 16÷4, ¾×16, 1½×16.</div></div>
+
+    <div class="draw-toolbar">
+      <button class="mode-btn active-blue" id="dm-draw" onclick="setDrawMode('draw')">✏️ Draw outline</button>
+      <button class="mode-btn" id="dm-shade" onclick="setDrawMode('shade')">🔳 Shade</button>
+      <span style="flex:1"></span>
+      <button class="mode-btn" onclick="closeCurrentShape()">Close shape</button>
+      <button class="mode-btn" onclick="undoDraw()">↩ Undo</button>
+      <button class="mode-btn" onclick="clearDraw()">Clear all</button>
+    </div>
+    <div id="area-wrap"></div>
+    <div style="margin-top:8px;font-size:14px;color:var(--text-dim)">🟧 Shape A · 🟦 Your drawings (click a completed shape to delete it)</div>
+
+    <div class="eq-grid" style="margin-top:16px">
+      <div class="eq-row"><label>a)</label><span class="eq-text">The area of shape A is</span><input id="ans-12a" placeholder="?" style="width:70px" inputmode="numeric"><span class="eq-text">square units.</span></div>
+      <div class="eq-row"><label>b)</label><span class="eq-text">Twice the area of A is</span><input id="ans-12b" placeholder="?" style="width:70px" inputmode="numeric"></div>
+      <div class="eq-row" style="margin-top:8px"><label>c)</label><span class="eq-text" style="font-weight:600">Calculate the areas and then draw the shapes on the grid.</span></div>
+      <div class="eq-row"><label></label><span class="eq-text">B is 3 times the area of A.</span><input id="ans-12c1" placeholder="?" style="width:70px" inputmode="numeric"></div>
+      <div class="eq-row"><label></label><span class="eq-text">C is half of the area of A.</span><input id="ans-12c2" placeholder="?" style="width:70px" inputmode="numeric"></div>
+      <div class="eq-row"><label></label><span class="eq-text">D is a quarter of the area of A.</span><input id="ans-12c3" placeholder="?" style="width:70px" inputmode="numeric"></div>
+      <div class="eq-row"><label></label><span class="eq-text">E is ¾ of the area of A.</span><input id="ans-12c4" placeholder="?" style="width:70px" inputmode="numeric"></div>
+      <div class="eq-row"><label></label><span class="eq-text">F is 1½ of the area of A.</span><input id="ans-12c5" placeholder="?" style="width:70px" inputmode="numeric"></div>
+    </div>
+    <button class="btn btn-check" onclick="check12()">Check</button>
+    <div class="feedback" id="fb-12"></div>
+    <button class="btn btn-next" id="next-12" style="display:none" onclick="showReport()">🏁 See My Report</button>
+  </div>
+
+  <!-- ════════════ REPORT CARD ════════════ -->
+  <div class="report-card" id="report"></div>
+</div>
+
+<div class="celebrate" id="celebrate"></div>
+
+<script>
+// ═══ ORDER & STATE ═══
+const ORDER = ['1a','1b','2','3','4','5','6','7','8','9','10','11','12'];
+const state = {
+  startTime: Date.now(), problems: {}, currentGrowth: {},
+  selectedNum: null, calMode: 'laser', calState: {},
+  vennPlacements: { left: [], both: [], right: [] },
+  selectedFrac: null, fracPlacements: {},
+};
+ORDER.forEach(id => {
+  state.problems[id] = { attempts:0, growthUsed:0, growthSolved:0, solved:false, solvedAt:null };
+  state.currentGrowth[id] = 0;
+});
+
+// ═══ PROGRESS BAR ═══
+(function(){
+  const bar = document.getElementById('progress-bar');
+  ORDER.forEach(id => {
+    const pip = document.createElement('div');
+    pip.className = 'progress-pip' + (id==='1a' ? ' active' : '');
+    pip.id = 'pip-' + id;
+    pip.title = 'Problem ' + id.toUpperCase();
+    pip.onclick = () => goTo(id);
+    bar.appendChild(pip);
+  });
+})();
+
+// ═══ NAV ═══
+function goTo(id) {
+  document.querySelectorAll('.problem-card').forEach(c => c.classList.remove('active'));
+  document.getElementById('card-' + id).classList.add('active');
+  ORDER.forEach(pid => {
+    const pip = document.getElementById('pip-' + pid);
+    pip.classList.remove('active');
+    if (state.problems[pid].solved) pip.classList.add('done');
+  });
+  if (!state.problems[id].solved) document.getElementById('pip-' + id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function markSolved(id) {
+  state.problems[id].solved = true;
+  state.problems[id].solvedAt = Date.now();
+  document.getElementById('next-' + id).style.display = 'inline-block';
+  const gb = document.getElementById('grow-' + id + '-btn');
+  if (gb) gb.style.display = 'none';
+  document.getElementById('pip-' + id).classList.remove('active');
+  document.getElementById('pip-' + id).classList.add('done');
+  celebrate();
+}
+function showFeedback(id, type, msg) {
+  const el = document.getElementById(id);
+  el.className = 'feedback show ' + type;
+  el.textContent = msg;
+}
+
+// ═══ GROWTH ═══
+function showGrowth(pid) {
+  const step = ++state.currentGrowth[pid];
+  state.problems[pid].growthUsed = Math.max(state.problems[pid].growthUsed, step);
+  const el = document.getElementById('growth-' + pid + '-' + step);
+  if (el) el.classList.add('show');
+  if (step >= 3) { const b = document.getElementById('grow-' + pid + '-btn'); if(b) b.style.display = 'none'; }
+}
+function checkGrowth(pid, step, answer) {
+  const input = document.getElementById('gans-' + pid + '-' + step);
+  const val = input.value.trim().toLowerCase().replace(/\s/g, '');
+  if (val === answer) {
+    input.classList.remove('wrong'); input.classList.add('correct');
+    const fb = document.getElementById('gfb-' + pid + '-' + step);
+    fb.className = 'feedback show correct'; fb.textContent = '✓ Nice!';
+    state.problems[pid].growthSolved++;
+    const next = document.getElementById('growth-' + pid + '-' + (step + 1));
+    if (next) setTimeout(() => { next.classList.add('show'); state.currentGrowth[pid] = step + 1; if (step+1>=3) { const b=document.getElementById('grow-'+pid+'-btn'); if(b) b.style.display='none'; } }, 600);
+  } else {
+    input.classList.add('wrong'); setTimeout(() => input.classList.remove('wrong'), 400);
+    const fb = document.getElementById('gfb-' + pid + '-' + step);
+    fb.className = 'feedback show wrong'; fb.textContent = 'Not quite — try again!';
+  }
+}
+function checkGrowthMulti(pid, step, answers) {
+  const input = document.getElementById('gans-' + pid + '-' + step);
+  const val = input.value.trim().toLowerCase().replace(/\s/g, '');
+  if (answers.includes(val)) {
+    input.classList.add('correct');
+    const fb = document.getElementById('gfb-' + pid + '-' + step);
+    fb.className = 'feedback show correct'; fb.textContent = '✓ Nice!';
+    state.problems[pid].growthSolved++;
+    const next = document.getElementById('growth-' + pid + '-' + (step + 1));
+    if (next) setTimeout(() => { next.classList.add('show'); state.currentGrowth[pid] = step + 1; if (step+1>=3) { const b=document.getElementById('grow-'+pid+'-btn'); if(b) b.style.display='none'; } }, 600);
+  } else {
+    input.classList.add('wrong'); setTimeout(() => input.classList.remove('wrong'), 400);
+    const fb = document.getElementById('gfb-' + pid + '-' + step);
+    fb.className = 'feedback show wrong'; fb.textContent = 'Not quite — try again!';
+  }
+}
+
+// ═══ PROBLEM 1a ═══
+function check1a() {
+  state.problems['1a'].attempts++;
+  const val = document.getElementById('ans-1a').value.trim(), inp = document.getElementById('ans-1a');
+  if (val === '9987') { inp.classList.add('correct'); showFeedback('fb-1a','correct','🎉 9987 — digits 9, 8, 7!'); markSolved('1a'); }
+  else { inp.classList.add('wrong'); setTimeout(()=>inp.classList.remove('wrong'),400);
+    const a = state.problems['1a'].attempts;
+    showFeedback('fb-1a','wrong', a===1?'Does it have exactly 3 different digits?':a===2?'3 different digits means 3 distinct values. You can repeat!':'Which digit in the thousands place?'); }
+}
+
+// ═══ PROBLEM 1b ═══
+function check1b() {
+  state.problems['1b'].attempts++;
+  const val = document.getElementById('ans-1b').value.trim(), inp = document.getElementById('ans-1b');
+  if (val === '1002') { inp.classList.add('correct'); showFeedback('fb-1b','correct','🎉 1002 — digits 1, 0, 2!'); markSolved('1b'); }
+  else { inp.classList.add('wrong'); setTimeout(()=>inp.classList.remove('wrong'),400);
+    const a = state.problems['1b'].attempts;
+    showFeedback('fb-1b','wrong', a===1?"First digit can't be 0!":a===2?'Smallest first digit is 1. Fill rest with smallest digits.':'Use digits 0, 1, 2. Arrange for smallest 4-digit number!'); }
+}
+
+// ═══ PROBLEM 2: VENN ═══
+const multOf3=[], multOf5=[], multBoth=[];
+for (let i=1;i<=30;i++) { const m3=i%3===0,m5=i%5===0; if(m3&&m5) multBoth.push(i); else if(m3) multOf3.push(i); else if(m5) multOf5.push(i); }
+const allMults = [...multOf3,...multOf5,...multBoth].sort((a,b)=>a-b);
+
+function buildNumberBank() {
+  const bank = document.getElementById('num-bank');
+  allMults.forEach(n => {
+    const chip = document.createElement('span'); chip.className='num-chip'; chip.textContent=n; chip.id='chip-'+n;
+    chip.draggable=true; chip.onclick=()=>selectNumber(n);
+    chip.ondragstart=e=>{e.dataTransfer.setData('text/plain',n);state.selectedNum=n;setTimeout(()=>chip.style.opacity='0.4',0);};
+    chip.ondragend=()=>chip.style.opacity='';
+    bank.appendChild(chip);
+  });
+}
+function selectNumber(n) {
+  document.querySelectorAll('.num-chip').forEach(c=>c.classList.remove('selected'));
+  state.selectedNum=n;
+  const chip=document.getElementById('chip-'+n);
+  if(chip&&!chip.classList.contains('placed')) chip.classList.add('selected');
+}
+function placeNumber(zone) {
+  const n=state.selectedNum; if(n===null) return;
+  if(Object.values(state.vennPlacements).flat().includes(n)) return;
+  state.vennPlacements[zone].push(n);
+  const chip=document.getElementById('chip-'+n); chip.classList.add('placed'); chip.classList.remove('selected');
+  state.selectedNum=null; renderVenn();
+}
+function dragOver(e){e.preventDefault();e.currentTarget.classList.add('drag-over');}
+function dragLeave(e){e.currentTarget.classList.remove('drag-over');}
+function dropNum(e,zone){
+  e.preventDefault();e.currentTarget.classList.remove('drag-over');
+  const n=parseInt(e.dataTransfer.getData('text/plain'));if(isNaN(n))return;
+  if(Object.values(state.vennPlacements).flat().includes(n))return;
+  state.vennPlacements[zone].push(n);
+  const chip=document.getElementById('chip-'+n);chip.classList.add('placed');chip.classList.remove('selected');
+  state.selectedNum=null;renderVenn();
+}
+function removeFromVenn(n) {
+  for(const z of['left','both','right']) state.vennPlacements[z]=state.vennPlacements[z].filter(x=>x!==n);
+  const chip=document.getElementById('chip-'+n);chip.classList.remove('placed');chip.classList.remove('selected');renderVenn();
+}
+function renderVenn() {
+  for(const z of['left','both','right']){
+    const dz=document.getElementById('dz-'+z);
+    dz.querySelectorAll('.placed-num').forEach(el=>el.remove());
+    state.vennPlacements[z].sort((a,b)=>a-b).forEach(n=>{
+      const el=document.createElement('span');el.className='placed-num';el.textContent=n;
+      el.onclick=e=>{e.stopPropagation();removeFromVenn(n);};dz.appendChild(el);
+    });
+    const hint=dz.querySelector('.zone-hint');if(hint)hint.style.display=state.vennPlacements[z].length?'none':'';
+  }
+}
+function checkVenn() {
+  state.problems['2'].attempts++;
+  const pL=state.vennPlacements.left.slice().sort((a,b)=>a-b);
+  const pB=state.vennPlacements.both.slice().sort((a,b)=>a-b);
+  const pR=state.vennPlacements.right.slice().sort((a,b)=>a-b);
+  const eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+  if(eq(pL,multOf3)&&eq(pB,multBoth)&&eq(pR,multOf5)){showFeedback('fb-2','correct','🎉 Perfect Venn diagram!');markSolved('2');}
+  else{const t=allMults.length,p=pL.length+pB.length+pR.length;let c=0;
+    pL.forEach(n=>{if(multOf3.includes(n))c++;});pB.forEach(n=>{if(multBoth.includes(n))c++;});pR.forEach(n=>{if(multOf5.includes(n))c++;});
+    if(p<t)showFeedback('fb-2','wrong',p+' of '+t+' placed.');else showFeedback('fb-2','wrong',c+' of '+t+' correct. Check multiples of BOTH 3 and 5.');}
+}
+
+// ═══ PROBLEM 3: CALENDAR ═══
+function buildCalendar() {
+  const grid=document.getElementById('cal-grid');
+  ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(d=>{const el=document.createElement('div');el.className='cal-day-name';el.textContent=d;grid.appendChild(el);});
+  const empty=document.createElement('div');empty.className='cal-cell empty';grid.appendChild(empty);
+  for(let d=1;d<=30;d++){const el=document.createElement('div');el.className='cal-cell';el.textContent=d;el.id='cal-'+d;el.onclick=()=>clickCalDay(d);grid.appendChild(el);}
+}
+function setCalMode(m){state.calMode=m;document.getElementById('mode-laser').className='mode-btn'+(m==='laser'?' active-green':'');document.getElementById('mode-movie').className='mode-btn'+(m==='movie'?' active-red':'');document.getElementById('mode-erase').className='mode-btn'+(m==='erase'?' active-eraser':'');}
+function clickCalDay(d){const m=state.calMode,c=state.calState[d]||null;if(m==='erase')delete state.calState[d];else if(m==='laser'){if(c==='movie')state.calState[d]='both';else if(c==='both')state.calState[d]='movie';else if(c==='laser')delete state.calState[d];else state.calState[d]='laser';}else if(m==='movie'){if(c==='laser')state.calState[d]='both';else if(c==='both')state.calState[d]='laser';else if(c==='movie')delete state.calState[d];else state.calState[d]='movie';}for(let i=1;i<=30;i++){const el=document.getElementById('cal-'+i);el.className='cal-cell';if(state.calState[i])el.classList.add(state.calState[i]);}}
+function check3(){state.problems['3'].attempts++;const v=document.getElementById('ans-3').value.trim().replace(/\s/g,''),inp=document.getElementById('ans-3');const nums=v.split(',').map(Number).filter(n=>!isNaN(n)).sort((a,b)=>a-b);if(JSON.stringify(nums)===JSON.stringify([10,20,30])){inp.classList.add('correct');showFeedback('fb-3','correct','🎉 June 10, 20, and 30!');markSolved('3');}else{inp.classList.add('wrong');setTimeout(()=>inp.classList.remove('wrong'),400);showFeedback('fb-3','wrong',state.problems['3'].attempts===1?'Which dates are BOTH green and red?':'Laser=even dates. Movies=5,10,15,20,25,30. Which overlap?');}}
+
+// ═══ PROBLEM 4 ═══
+function check4(){state.problems['4'].attempts++;const a=parseFloat(document.getElementById('ans-4a').value.replace('$','')),b=parseFloat(document.getElementById('ans-4b').value.replace('$',''));
+  if(a===13&&b===3){document.getElementById('ans-4a').classList.add('correct');document.getElementById('ans-4b').classList.add('correct');showFeedback('fb-4','correct','🎉 4 cards=$13, 5 notebooks=$3!');markSolved('4');}
+  else{if(a!==13){document.getElementById('ans-4a').classList.add('wrong');setTimeout(()=>document.getElementById('ans-4a').classList.remove('wrong'),400);}if(b!==3){document.getElementById('ans-4b').classList.add('wrong');setTimeout(()=>document.getElementById('ans-4b').classList.remove('wrong'),400);}showFeedback('fb-4','wrong','4 is double 2 → double the price. 5 is half of 10 → halve the price.');}}
+
+// ═══ PROBLEM 5 ═══
+function check5(){state.problems['5'].attempts++;const a=document.getElementById('ans-5a').value.trim().toLowerCase().replace(/\s|hours?/g,''),b=document.getElementById('ans-5b').value.trim().toLowerCase().replace(/\s|hours?/g,''),c=document.getElementById('ans-5c').value.trim().toLowerCase().replace(/\s|hours?/g,'');
+  const aOk=a==='2',bOk=['2/5','0.4'].includes(b),cOk=['m/5','m÷5'].includes(c);
+  if(aOk&&bOk&&cOk){['ans-5a','ans-5b','ans-5c'].forEach(id=>document.getElementById(id).classList.add('correct'));showFeedback('fb-5','correct','🎉 10→2hrs, 2→2/5hr, m→m/5hrs!');markSolved('5');}
+  else{let m='';if(!aOk){document.getElementById('ans-5a').classList.add('wrong');setTimeout(()=>document.getElementById('ans-5a').classList.remove('wrong'),400);m+='a) 10 is double 5. ';}if(!bOk){document.getElementById('ans-5b').classList.add('wrong');setTimeout(()=>document.getElementById('ans-5b').classList.remove('wrong'),400);m+='b) 1 prob=1/5hr, so 2=? ';}if(!cOk){document.getElementById('ans-5c').classList.add('wrong');setTimeout(()=>document.getElementById('ans-5c').classList.remove('wrong'),400);m+='c) Use m as variable! ';}showFeedback('fb-5','wrong',m);}}
+
+// ═══ PROBLEM 6 ═══
+const p6a={a:'4',b:'2',c:'3',d:'1',e:'1/3',f:'1/10'};
+function check6(){state.problems['6'].attempts++;let ok=true;
+  for(const[k,ans]of Object.entries(p6a)){const inp=document.getElementById('ans-6'+k),v=inp.value.trim().toLowerCase();
+    const match=v===ans||(k==='e'&&['1/3','0.33','0.333'].includes(v))||(k==='f'&&['1/10','0.1'].includes(v));
+    if(match)inp.classList.add('correct');else{inp.classList.add('wrong');setTimeout(()=>inp.classList.remove('wrong'),400);ok=false;}}
+  if(ok){showFeedback('fb-6','correct','🎉 All correct! e and f are fractions.');markSolved('6');}
+  else showFeedback('fb-6','wrong','Divide both sides by 30. For e and f, answer is a fraction!');}
+
+// ═══ PROBLEM 7: TRIANGLES ═══
+function buildTriangles(){
+  const grid=document.getElementById('tri-grid');
+  [{l:'A',pts:'10,70 10,10 50,70',r:true},{l:'B',pts:'10,70 10,30 40,70',r:true},{l:'C',pts:'10,60 30,10 60,55',r:false},{l:'D',pts:'10,70 60,70 60,20',r:true}].forEach(t=>{
+    const div=document.createElement('div');div.className='tri-option';div.id='tri-'+t.l;
+    div.onclick=()=>{state.problems['7'].attempts++;document.querySelectorAll('.tri-option').forEach(el=>el.className='tri-option');
+      if(!t.r){div.classList.add('correct');showFeedback('fb-7','correct','🎉 C doesn\'t belong — not a right triangle!');markSolved('7');}
+      else{div.classList.add('wrong');showFeedback('fb-7','wrong','That one IS a right triangle. Find the one without a 90° corner.');}};
+    div.innerHTML='<svg width="80" height="80" viewBox="0 0 70 80"><polygon points="'+t.pts+'" fill="rgba(74,143,191,0.15)" stroke="#4A8FBF" stroke-width="2"/><text x="35" y="78" text-anchor="middle" font-size="14" font-weight="600" fill="#2D2A24" font-family="Fredoka">'+t.l+'</text></svg>';
+    grid.appendChild(div);});}
+
+// ═══ PROBLEM 8: COMPARE ═══
+const cmpP=[{l:'52+(x+3)',r:'52+x+3',a:'='},{l:'52+(x−3)',r:'52+x+3',a:'<'},{l:'52−(x+3)',r:'52−x+3',a:'<'},{l:'35−(x+4)',r:'35−x−4',a:'='},{l:'35−(x+4)',r:'35−x+4',a:'<'},{l:'35+(4−x)',r:'35+x+4',a:'<'}];
+const cmpS={};
+function buildCompare(){const grid=document.getElementById('cmp-grid');cmpP.forEach((p,i)=>{cmpS[i]=null;const row=document.createElement('div');row.className='eq-row';
+  row.innerHTML='<label>'+String.fromCharCode(97+i)+')</label><span class="eq-text">'+p.l+'</span><button class="cmp-btn" id="cmp-'+i+'-lt" onclick="setCmp('+i+',\'<\')">&lt;</button><button class="cmp-btn" id="cmp-'+i+'-eq" onclick="setCmp('+i+',\'=\')">=</button><button class="cmp-btn" id="cmp-'+i+'-gt" onclick="setCmp('+i+',\'>\')">&gt;</button><span class="eq-text">'+p.r+'</span>';
+  grid.appendChild(row);});}
+function setCmp(i,v){cmpS[i]=v;['lt','eq','gt'].forEach(s=>document.getElementById('cmp-'+i+'-'+s).classList.remove('selected','correct','wrong'));document.getElementById('cmp-'+i+'-'+(v==='<'?'lt':v==='='?'eq':'gt')).classList.add('selected');}
+function check8(){state.problems['8'].attempts++;let ok=true;cmpP.forEach((p,i)=>{const pk=cmpS[i],bid=pk==='<'?'lt':pk==='='?'eq':'gt';if(pk===p.a){if(pk)document.getElementById('cmp-'+i+'-'+bid).classList.add('correct');}else{ok=false;if(pk)document.getElementById('cmp-'+i+'-'+bid).classList.add('wrong');}});
+  if(ok){showFeedback('fb-8','correct','🎉 All correct! Minus flips signs inside parens.');markSolved('8');}else showFeedback('fb-8','wrong','Remember: a−(b+c)=a−b−c, NOT a−b+c.');}
+
+// ═══ PROBLEM 9: DISTRIBUTIVE ═══
+const distP=[{d:'20·3 + 80·3',c:'100',f:'3',a:'300',o:'·'},{d:'230·2 − 70·2',c:'160',f:'2',a:'320',o:'·'},{d:'55·5 + 145·5',c:'200',f:'5',a:'1000',o:'·'},{d:'210÷6 + 150÷6',c:'360',f:'6',a:'60',o:'÷'},{d:'80·3 − 20·3',c:'60',f:'3',a:'180',o:'·'},{d:'345·4 − 245·4',c:'100',f:'4',a:'400',o:'·'},{d:'147·7 − 77·7',c:'70',f:'7',a:'490',o:'·'},{d:'152÷4 − 32÷4',c:'120',f:'4',a:'30',o:'÷'}];
+function buildDist(){const grid=document.getElementById('dist-grid');distP.forEach((p,i)=>{const row=document.createElement('div');row.className='eq-row';
+  row.innerHTML='<label>'+String.fromCharCode(97+i)+')</label><span class="eq-text" style="font-size:15px">'+p.d+' =</span><input id="dist-'+i+'-c" placeholder="?" style="width:65px"><span class="eq-text"> '+p.o+' '+p.f+' =</span><input id="dist-'+i+'-a" placeholder="?" style="width:75px">';
+  grid.appendChild(row);});}
+function checkGrowth9(){const v1=document.getElementById('gans-9-1').value.trim(),v2=document.getElementById('gans-9-1b').value.trim();
+  if(v1==='10'&&v2==='30'){document.getElementById('gans-9-1').classList.add('correct');document.getElementById('gans-9-1b').classList.add('correct');
+    document.getElementById('gfb-9-1').className='feedback show correct';document.getElementById('gfb-9-1').textContent='✓ 3·10=30!';state.problems['9'].growthSolved++;
+    setTimeout(()=>{document.getElementById('growth-9-2').classList.add('show');state.currentGrowth['9']=2;},600);}
+  else{[document.getElementById('gans-9-1'),document.getElementById('gans-9-1b')].forEach(el=>{el.classList.add('wrong');setTimeout(()=>el.classList.remove('wrong'),400);});
+    document.getElementById('gfb-9-1').className='feedback show wrong';document.getElementById('gfb-9-1').textContent='Combine 4+6 first.';}}
+function check9(){state.problems['9'].attempts++;let ok=true;distP.forEach((p,i)=>{const ci=document.getElementById('dist-'+i+'-c'),ai=document.getElementById('dist-'+i+'-a');
+  if(ci.value.trim()===p.c)ci.classList.add('correct');else{ci.classList.add('wrong');setTimeout(()=>ci.classList.remove('wrong'),400);ok=false;}
+  if(ai.value.trim()===p.a)ai.classList.add('correct');else{ai.classList.add('wrong');setTimeout(()=>ai.classList.remove('wrong'),400);ok=false;}});
+  if(ok){showFeedback('fb-9','correct','🎉 Distributive property mastered!');markSolved('9');}else showFeedback('fb-9','wrong','Combine the numbers, then multiply/divide by the common factor.');}
+
+// ═══ PROBLEM 10 ═══
+function check10(){state.problems['10'].attempts++;const n=v=>v.replace(/[\s,$,]/g,'');
+  const a=n(document.getElementById('ans-10a').value),b=n(document.getElementById('ans-10b').value),c=n(document.getElementById('ans-10c').value);
+  const aOk=a==='31297250',bOk=b==='319379860',cOk=c==='1357213840';
+  if(aOk&&bOk&&cOk){['ans-10a','ans-10b','ans-10c'].forEach(id=>document.getElementById(id).classList.add('correct'));showFeedback('fb-10','correct','🎉 Great column subtraction!');markSolved('10');}
+  else{if(!aOk){document.getElementById('ans-10a').classList.add('wrong');setTimeout(()=>document.getElementById('ans-10a').classList.remove('wrong'),400);}
+    if(!bOk){document.getElementById('ans-10b').classList.add('wrong');setTimeout(()=>document.getElementById('ans-10b').classList.remove('wrong'),400);}
+    if(!cOk){document.getElementById('ans-10c').classList.add('wrong');setTimeout(()=>document.getElementById('ans-10c').classList.remove('wrong'),400);}
+    showFeedback('fb-10','wrong','Use column subtraction carefully.'+(cOk?'':'For c, add Israel+Iceland first.'));}}
+
+// ═══ PROBLEM 11: NUMBER LINE ═══
+// 18 divisions → LCD(2,3,6,9). Each fraction snaps to a tick.
+const NL_FRACS=[{l:'1/2',t:9},{l:'1/3',t:6},{l:'1/6',t:3},{l:'1/9',t:2},{l:'2/3',t:12},{l:'2/6',t:6},{l:'5/9',t:10}];
+const NL_N=18,NL_X0=60,NL_X1=560,NL_Y=55;
+
+function buildNumLine(){
+  const bank=document.getElementById('frac-bank');
+  NL_FRACS.forEach(f=>{
+    const c=document.createElement('span');c.className='frac-chip';c.textContent=f.l;c.id='fchip-'+f.l.replace('/','_');
+    c.onclick=()=>{document.querySelectorAll('.frac-chip').forEach(x=>x.classList.remove('selected'));c.classList.add('selected');state.selectedFrac=f;};
+    bank.appendChild(c);
+  });
+  drawNumLine();
+}
+function drawNumLine(){
+  const wrap=document.getElementById('numline-wrap');
+  const sp=(NL_X1-NL_X0)/NL_N;
+  let ticks='';
+  for(let i=0;i<=NL_N;i++){
+    const x=NL_X0+i*sp,maj=i===0||i===NL_N,h=maj?14:(i%2===0?10:6),sw=maj?2:1;
+    ticks+='<line x1="'+x+'" y1="'+(NL_Y-h)+'" x2="'+x+'" y2="'+(NL_Y+h)+'" stroke="#2D2A24" stroke-width="'+sw+'"/>';
+    if(maj) ticks+='<text x="'+x+'" y="'+(NL_Y+30)+'" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="14" font-weight="600" fill="#2D2A24">'+(i===0?'0':'1')+'</text>';
+    ticks+='<rect x="'+(x-sp/2)+'" y="'+(NL_Y-22)+'" width="'+sp+'" height="44" fill="transparent" cursor="pointer" onclick="placeOnTick('+i+')"/>';
+  }
+  let markers='';
+  for(const[l,ti] of Object.entries(state.fracPlacements)){
+    const x=NL_X0+ti*sp;
+    markers+='<rect x="'+(x-20)+'" y="8" width="40" height="22" rx="10" fill="#E8733A" cursor="pointer" onclick="removeFromLine(\''+l+'\')"/>';
+    markers+='<polygon points="'+(x-5)+',30 '+(x+5)+',30 '+x+',37" fill="#E8733A" cursor="pointer" onclick="removeFromLine(\''+l+'\')"/>';
+    markers+='<text x="'+x+'" y="23" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" font-weight="600" fill="white" cursor="pointer" onclick="removeFromLine(\''+l+'\')">'+l+'</text>';
+  }
+  wrap.innerHTML='<svg viewBox="0 0 620 90">'
+    +'<polygon points="32,'+NL_Y+' 40,'+(NL_Y-5)+' 40,'+(NL_Y+5)+'" fill="#2D2A24"/>'
+    +'<line x1="38" y1="'+NL_Y+'" x2="575" y2="'+NL_Y+'" stroke="#2D2A24" stroke-width="2"/>'
+    +'<polygon points="575,'+NL_Y+' 569,'+(NL_Y-5)+' 569,'+(NL_Y+5)+'" fill="#2D2A24"/>'
+    +'<text x="590" y="'+(NL_Y+5)+'" font-family="JetBrains Mono,monospace" font-size="15" font-weight="600" font-style="italic" fill="#2D2A24">x</text>'
+    +ticks+markers+'</svg>';
+}
+function placeOnTick(i){
+  if(!state.selectedFrac)return;const f=state.selectedFrac;
+  state.fracPlacements[f.l]=i;
+  document.getElementById('fchip-'+f.l.replace('/','_')).classList.add('placed');
+  document.getElementById('fchip-'+f.l.replace('/','_')).classList.remove('selected');
+  state.selectedFrac=null;drawNumLine();
+}
+function removeFromLine(l){delete state.fracPlacements[l];document.getElementById('fchip-'+l.replace('/','_')).classList.remove('placed');drawNumLine();}
+function check11(){state.problems['11'].attempts++;let correct=0;
+  NL_FRACS.forEach(f=>{if(state.fracPlacements[f.l]===f.t)correct++;});
+  if(correct===NL_FRACS.length){showFeedback('fb-11','correct','🎉 All fractions placed! Notice 2/6=1/3.');markSolved('11');}
+  else if(Object.keys(state.fracPlacements).length<NL_FRACS.length)showFeedback('fb-11','wrong','Place all '+NL_FRACS.length+' fractions first!');
+  else showFeedback('fb-11','wrong',correct+' of '+NL_FRACS.length+' correct. 2/6=1/3 → same tick!');}
+
+// ═══ PROBLEM 12: AREA ═══
+// Shape A: chevron pointing right. 4×4 square with triangle rearranged. Area=16 (shoelace verified).
+// Vertices: (0,0),(4,0),(6,2),(4,4),(0,4),(2,2) offset by (1,1) on the grid.
+const G12_W=28,G12_H=20,G12_C=22;
+const SHAPE_A=[[1,1],[5,1],[7,3],[5,5],[1,5],[3,3]];
+const drawSt={mode:'draw',currentPath:[],shapes:[],shaded:new Set()};
+
+function buildAreaGrid(){drawGrid12();}
+function drawGrid12(){
+  const wrap=document.getElementById('area-wrap');
+  const C=G12_C,W=G12_W,H=G12_H,sw=W*C,sh=H*C;
+  let s='';
+  for(let x=0;x<=W;x++) s+='<line x1="'+(x*C)+'" y1="0" x2="'+(x*C)+'" y2="'+sh+'" stroke="#d4d0c8" stroke-width="0.5"/>';
+  for(let y=0;y<=H;y++) s+='<line x1="0" y1="'+(y*C)+'" x2="'+sw+'" y2="'+(y*C)+'" stroke="#d4d0c8" stroke-width="0.5"/>';
+  // Shaded cells
+  drawSt.shaded.forEach(k=>{const[cx,cy]=k.split(',').map(Number);
+    s+='<rect x="'+(cx*C)+'" y="'+(cy*C)+'" width="'+C+'" height="'+C+'" fill="rgba(74,143,191,0.4)"/>';});
+  // Completed user shapes
+  drawSt.shapes.forEach((p,i)=>{const pts=p.map(([x,y])=>x*C+','+y*C).join(' ');
+    s+='<polygon points="'+pts+'" fill="rgba(74,143,191,0.12)" stroke="#4A8FBF" stroke-width="2" stroke-linejoin="round" cursor="pointer" onclick="delShape12('+i+')"/>';});
+  // Current path in progress
+  if(drawSt.currentPath.length>0){
+    s+='<polyline points="'+drawSt.currentPath.map(([x,y])=>x*C+','+y*C).join(' ')+'" fill="none" stroke="#4A8FBF" stroke-width="2" stroke-linejoin="round" stroke-dasharray="4,3"/>';
+    drawSt.currentPath.forEach(([x,y])=>{s+='<circle cx="'+(x*C)+'" cy="'+(y*C)+'" r="3" fill="#4A8FBF"/>';});
+    if(drawSt.currentPath.length>=3){const[fx,fy]=drawSt.currentPath[0];
+      s+='<circle cx="'+(fx*C)+'" cy="'+(fy*C)+'" r="6" fill="rgba(74,143,191,0.3)" stroke="#4A8FBF" stroke-width="1.5"/>';}
+  }
+  // Shape A
+  s+='<polygon points="'+SHAPE_A.map(([x,y])=>x*C+','+y*C).join(' ')+'" fill="rgba(232,115,58,0.2)" stroke="#E8733A" stroke-width="2.5" stroke-linejoin="round"/>';
+  const acx=Math.round(SHAPE_A.reduce((a,p)=>a+p[0],0)/SHAPE_A.length*C);
+  const acy=Math.round(SHAPE_A.reduce((a,p)=>a+p[1],0)/SHAPE_A.length*C)+5;
+  s+='<text x="'+acx+'" y="'+acy+'" text-anchor="middle" font-family="Fredoka,sans-serif" font-size="16" font-weight="700" fill="#2D2A24">A</text>';
+  // 1 unit marker
+  const ux=(W-3)*C,uy=C;
+  s+='<line x1="'+ux+'" y1="'+uy+'" x2="'+(ux+C)+'" y2="'+uy+'" stroke="#2D2A24" stroke-width="2"/>';
+  s+='<line x1="'+ux+'" y1="'+(uy-4)+'" x2="'+ux+'" y2="'+(uy+4)+'" stroke="#2D2A24" stroke-width="1.5"/>';
+  s+='<line x1="'+(ux+C)+'" y1="'+(uy-4)+'" x2="'+(ux+C)+'" y2="'+(uy+4)+'" stroke="#2D2A24" stroke-width="1.5"/>';
+  s+='<text x="'+(ux+C/2)+'" y="'+(uy-6)+'" text-anchor="middle" font-family="Fredoka,sans-serif" font-size="11" font-weight="500" fill="#2D2A24">1 unit</text>';
+  // Click targets
+  if(drawSt.mode==='draw'){
+    for(let y=0;y<=H;y++)for(let x=0;x<=W;x++)
+      s+='<circle cx="'+(x*C)+'" cy="'+(y*C)+'" r="7" fill="transparent" cursor="crosshair" onclick="clickInt12('+x+','+y+')"/>';
+  }else{
+    for(let y=0;y<H;y++)for(let x=0;x<W;x++)
+      s+='<rect x="'+(x*C)+'" y="'+(y*C)+'" width="'+C+'" height="'+C+'" fill="transparent" cursor="pointer" onclick="togShade12('+x+','+y+')"/>';
+  }
+  wrap.innerHTML='<svg viewBox="0 0 '+sw+' '+sh+'" style="max-width:'+sw+'px;border:2px solid #2D2A24;background:#fff">'+s+'</svg>';
+}
+function clickInt12(x,y){
+  if(drawSt.currentPath.length>=3){const[fx,fy]=drawSt.currentPath[0];
+    if(x===fx&&y===fy){drawSt.shapes.push([...drawSt.currentPath]);drawSt.currentPath=[];drawGrid12();return;}}
+  if(drawSt.currentPath.length>0){const l=drawSt.currentPath[drawSt.currentPath.length-1];if(l[0]===x&&l[1]===y)return;}
+  drawSt.currentPath.push([x,y]);drawGrid12();
+}
+function togShade12(x,y){const k=x+','+y;if(drawSt.shaded.has(k))drawSt.shaded.delete(k);else drawSt.shaded.add(k);drawGrid12();}
+function delShape12(i){drawSt.shapes.splice(i,1);drawGrid12();}
+function setDrawMode(m){drawSt.mode=m;
+  document.getElementById('dm-draw').className='mode-btn'+(m==='draw'?' active-blue':'');
+  document.getElementById('dm-shade').className='mode-btn'+(m==='shade'?' active-blue':'');drawGrid12();}
+function closeCurrentShape(){if(drawSt.currentPath.length>=3){drawSt.shapes.push([...drawSt.currentPath]);drawSt.currentPath=[];drawGrid12();}}
+function undoDraw(){if(drawSt.currentPath.length>0)drawSt.currentPath.pop();else if(drawSt.shapes.length>0)drawSt.shapes.pop();drawGrid12();}
+function clearDraw(){drawSt.currentPath=[];drawSt.shapes=[];drawSt.shaded.clear();drawGrid12();}
+function check12(){state.problems['12'].attempts++;
+  const fields=[{id:'ans-12a',a:'16'},{id:'ans-12b',a:'32'},{id:'ans-12c1',a:'48'},{id:'ans-12c2',a:'8'},{id:'ans-12c3',a:'4'},{id:'ans-12c4',a:'12'},{id:'ans-12c5',a:'24'}];
+  let ok=true;fields.forEach(f=>{const inp=document.getElementById(f.id);if(inp.value.trim()===f.a)inp.classList.add('correct');else{inp.classList.add('wrong');setTimeout(()=>inp.classList.remove('wrong'),400);ok=false;}});
+  if(ok){showFeedback('fb-12','correct','🎉 All areas correct! Now draw the shapes on the grid and copy to your book.');markSolved('12');}
+  else showFeedback('fb-12','wrong','Area of A = 16 (same as a 4×4 square). Multiply or divide 16 for each shape.');}
+
+// ═══ REPORT ═══
+function showReport(){document.querySelectorAll('.problem-card').forEach(c=>c.classList.remove('active'));
+  const r=document.getElementById('report'),t=Math.round((Date.now()-state.startTime)/1000),m=Math.floor(t/60),s=t%60;
+  let gs=0,ua=0;const rows=ORDER.map(pid=>{const p=state.problems[pid];gs+=p.growthSolved;const un=p.growthUsed===0;if(un&&p.solved)ua++;
+    return'<tr><td style="font-weight:600">'+pid.toUpperCase()+'</td><td>'+p.attempts+(p.attempts===1?' try':' tries')+'</td><td>'+(un?'<span class="badge badge-gold">⭐ Unaided</span>':'<span class="badge badge-green">🌱 +'+p.growthSolved+'</span>')+'</td><td>'+(p.solved?'✅':'❌')+'</td></tr>';}).join('');
+  const solved=ORDER.filter(id=>state.problems[id].solved).length;
+  const badge=ua===ORDER.length?'🏆 All Unaided!':ua>=7?'⭐ Strong Solver':gs>0?'🌱 Growth Champion':'💪 Keep Going!';
+  r.innerHTML='<h2>📋 Report Card</h2><p style="font-size:16px;color:var(--text-dim);margin-bottom:16px">Time: <strong>'+m+'m '+s+'s</strong> · Solved: <strong>'+solved+'/'+ORDER.length+'</strong></p><table class="report-table"><thead><tr><th>Problem</th><th>Attempts</th><th>Path</th><th>Solved</th></tr></thead><tbody>'+rows+'</tbody></table><div style="margin-top:24px;padding:16px;background:var(--bg);border-radius:var(--radius-sm);text-align:center"><div style="font-size:24px;font-weight:700;margin-bottom:4px">'+badge+'</div><div style="font-size:15px;color:var(--text-dim)">'+ua+' of '+ORDER.length+' unaided · '+gs+' growth problems solved</div></div><p style="margin-top:16px;font-size:15px;color:var(--text-dim);text-align:center">Now write your answers in your RSM book! 📖</p>';
+  r.classList.add('show');if(ua>=3)celebrate();}
+
+// ═══ CELEBRATION ═══
+function celebrate(){const c=document.getElementById('celebrate'),colors=['#E8733A','#4A8FBF','#6B9F5E','#8B6BAE','#F4A261','#D94F4F'];
+  for(let i=0;i<40;i++){const d=document.createElement('div');d.className='confetti';d.style.left=Math.random()*100+'%';d.style.background=colors[Math.floor(Math.random()*colors.length)];d.style.animationDelay=Math.random()*0.6+'s';d.style.width=(6+Math.random()*8)+'px';d.style.height=(6+Math.random()*8)+'px';c.appendChild(d);}
+  setTimeout(()=>c.innerHTML='',2500);}
+
+// ═══ INIT ═══
+buildNumberBank();
+buildCalendar();
+buildTriangles();
+buildCompare();
+buildDist();
+buildNumLine();
+buildAreaGrid();
+
+// Add skip buttons to each problem card
+ORDER.forEach((id, idx) => {
+  if (idx < ORDER.length - 1) {
+    const card = document.getElementById('card-' + id);
+    const skip = document.createElement('button');
+    skip.className = 'btn-skip';
+    skip.textContent = 'Skip for now \u2192';
+    skip.onclick = () => goTo(ORDER[idx + 1]);
+    card.appendChild(skip);
+  }
+});
+</script>
+</body>
+</html>

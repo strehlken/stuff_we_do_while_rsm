@@ -1,0 +1,5 @@
+.DS_Store
+.vscode/
+
+# Local-only photo archive — kept on disk, not on GitHub
+archive/*.HEIC

@@ -141,9 +141,9 @@ input[type="range"]::-moz-range-thumb{width:30px;height:30px;background:var(--ac
 <div class="app">
   <header class="topbar">
     <h1>What is temperature?</h1>
-    <div class="progress">Chapter <span id="cur-ch">1</span> of 15</div>
+    <div class="progress">Chapter <span id="cur-ch">1</span> of 14</div>
   </header>
-  <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:6.67%"></div></div>
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:7.14%"></div></div>
 
   <main id="main">
 
@@ -432,33 +432,12 @@ input[type="range"]::-moz-range-thumb{width:30px;height:30px;background:var(--ac
     </div>
   </section>
 
-  <!-- ========== CH 10: NOISY CROWD ========== -->
+  <!-- ========== CH 10: AVERAGE ========== -->
   <section class="chapter" data-ch="9">
-    <div class="ch-num">Chapter 10 — the noisy crowd</div>
-    <h2 class="ch-title">Particles fly in every direction. Direction is not the temperature.</h2>
-    <div class="visual">
-      <div id="noisy-pbox" style="display:flex;justify-content:center"></div>
-      <div class="legend">
-        <div class="legend-item"><span class="legend-swatch" style="background:#534AB7"></span> particle</div>
-        <div class="legend-item"><span class="legend-swatch" style="background:#534AB7;opacity:0.3;border-radius:50%"></span> wiggle ring (bigger = faster)</div>
-        <div class="legend-item"><span class="legend-swatch" style="background:#E24B4A"></span> average direction</div>
-      </div>
-    </div>
-    <div class="ch-body">
-      <p>Watch the box. Around each particle is a faint ring — that's its <strong>wiggle</strong>, a number that says how energetically it's moving. Bigger ring = faster particle.</p>
-      <p>Now look at the tiny red arrow in the middle. That's the <strong>average direction</strong> of all the particles combined. Notice anything?</p>
-      <p>It's basically <em>zero</em>. It barely points anywhere. That's because some particles go left and some go right, some up, some down — when you add them all up, the directions mostly cancel out.</p>
-      <p>So direction can't be temperature. <strong>What matters is the wiggle</strong> — how energetic each particle is, regardless of which way it's pointed.</p>
-      <p>Now we just need to combine all those wiggles into one number.</p>
-    </div>
-  </section>
-
-  <!-- ========== CH 11: AVERAGE ========== -->
-  <section class="chapter" data-ch="10">
-    <div class="ch-num">Chapter 11 — taking the average</div>
+    <div class="ch-num">Chapter 10 — taking the average</div>
     <h2 class="ch-title">One number for the whole crowd. Add them all up. Divide by how many.</h2>
     <div class="ch-body">
-      <p>Here are 5 particles. Each has its own wiggle level — a number from 1 to 10:</p>
+      <p>Each particle is moving in some direction, but directions cancel out when you add them up — so what we average is how energetically each one is moving, regardless of where it's pointed. Here are 5 particles, each with its own wiggle level — a number from 1 to 10:</p>
     </div>
     <div id="avg-particles">
       <div class="particle-row"><div class="particle-dot"></div><span>Particle 1 — wiggle =</span><strong style="font-size:20px;color:var(--accent)" data-w="0">3</strong><div class="particle-bar" style="width:30%"></div></div>
@@ -482,9 +461,9 @@ input[type="range"]::-moz-range-thumb{width:30px;height:30px;background:var(--ac
     </div>
   </section>
 
-  <!-- ========== CH 12: HEAT VS TEMP ========== -->
-  <section class="chapter" data-ch="11">
-    <div class="ch-num">Chapter 12 — heat is not temperature</div>
+  <!-- ========== CH 11: HEAT VS TEMP ========== -->
+  <section class="chapter" data-ch="10">
+    <div class="ch-num">Chapter 11 — heat is not temperature</div>
     <h2 class="ch-title">A swimming pool has more heat than a teacup of boiling water.</h2>
     <div class="visual">
       <svg viewBox="0 0 460 220" width="460" height="220">
@@ -525,9 +504,9 @@ input[type="range"]::-moz-range-thumb{width:30px;height:30px;background:var(--ac
     </div>
   </section>
 
-  <!-- ========== CH 13: KELVIN ========== -->
-  <section class="chapter" data-ch="12">
-    <div class="ch-num">Chapter 13 — Kelvin: the honest scale</div>
+  <!-- ========== CH 12: KELVIN ========== -->
+  <section class="chapter" data-ch="11">
+    <div class="ch-num">Chapter 12 — Kelvin: the honest scale</div>
     <h2 class="ch-title">Drag the wiggle all the way down. The atoms freeze. Right there is zero Kelvin.</h2>
     <div class="visual">
       <div id="kelvin-pbox" style="display:flex;justify-content:center"></div>
@@ -550,9 +529,9 @@ input[type="range"]::-moz-range-thumb{width:30px;height:30px;background:var(--ac
     </div>
   </section>
 
-  <!-- ========== CH 14: UNIVERSE TOUR ========== -->
-  <section class="chapter" data-ch="13">
-    <div class="ch-num">Chapter 14 — the universe tour</div>
+  <!-- ========== CH 13: UNIVERSE TOUR ========== -->
+  <section class="chapter" data-ch="12">
+    <div class="ch-num">Chapter 13 — the universe tour</div>
     <h2 class="ch-title">Three rulers, one wiggle. From the bottom of the universe to the surface of the sun.</h2>
     <div class="visual">
       <div class="tour-layout">
@@ -570,8 +549,8 @@ input[type="range"]::-moz-range-thumb{width:30px;height:30px;background:var(--ac
     </div>
   </section>
 
-  <!-- ========== CH 15: BONUS - HOW WE MEASURE ========== -->
-  <section class="chapter" data-ch="14">
+  <!-- ========== CH 14: BONUS - HOW WE MEASURE ========== -->
+  <section class="chapter" data-ch="13">
     <div class="ch-num">Bonus chapter</div>
     <h2 class="ch-title">How we actually measure it: 5 different physical tricks.</h2>
     <div class="ch-body">
@@ -655,7 +634,7 @@ function freshenAll(sel) {
 const TITLES = [
   "The mystery","Your hand is a liar","Six clues","Building a thermometer",
   "Putting numbers on it","Other anchors","Guess the rule","Zoom in",
-  "The miracle","The noisy crowd","Taking the average","Heat ≠ temperature",
+  "The miracle","Taking the average","Heat ≠ temperature",
   "Kelvin","The universe tour","How we actually measure"
 ];
 
@@ -1157,18 +1136,8 @@ setupCallbacks[8] = () => {
   cleanupCallbacks[8] = () => { if (connBox) { connBox.destroy(); connBox = null; } };
 };
 
-// CH 10 — noisy crowd
-let noisyBox = null;
+// CH 10 — average
 setupCallbacks[9] = () => {
-  const wrap = $('#noisy-pbox');
-  wrap.innerHTML = '';
-  noisyBox = new WiggleBox(wrap, { w: 380, h: 280, n: 14, initT: 380, showHalos: true, showAvgArrow: true });
-  noisyBox.start();
-  cleanupCallbacks[9] = () => { if (noisyBox) { noisyBox.destroy(); noisyBox = null; } };
-};
-
-// CH 11 — average
-setupCallbacks[10] = () => {
   const slider = freshen('#avg-slider');
   const baseValues = [3, 5, 2, 7, 3];
   const valueEls = $$('#avg-particles strong');
@@ -1188,12 +1157,12 @@ setupCallbacks[10] = () => {
   }
   slider.addEventListener('input', update);
   slider.value = 40; update();
-  cleanupCallbacks[10] = () => {};
+  cleanupCallbacks[9] = () => {};
 };
 
-// CH 13 — Kelvin
+// CH 12 — Kelvin
 let kelvinBox = null;
-setupCallbacks[12] = () => {
+setupCallbacks[11] = () => {
   const wrap = $('#kelvin-pbox');
   wrap.innerHTML = '';
   kelvinBox = new WiggleBox(wrap, { w: 380, h: 220, n: 24, initT: 280 });
@@ -1207,10 +1176,10 @@ setupCallbacks[12] = () => {
   }
   slider.addEventListener('input', update);
   slider.value = 280; update();
-  cleanupCallbacks[12] = () => { if (kelvinBox) { kelvinBox.destroy(); kelvinBox = null; } };
+  cleanupCallbacks[11] = () => { if (kelvinBox) { kelvinBox.destroy(); kelvinBox = null; } };
 };
 
-// CH 14 — universe tour
+// CH 13 — universe tour
 let tourBox = null, tourTherm = null;
 const REFERENCES = [
   { name: 'Absolute zero',      K: 0,      C: -273,   F: -460 },
@@ -1224,7 +1193,7 @@ const REFERENCES = [
   { name: 'Lava',               K: 1473,   C: 1200,   F: 2192 },
   { name: 'Sun\'s surface',     K: 5778,   C: 5505,   F: 9941 }
 ];
-setupCallbacks[13] = () => {
+setupCallbacks[12] = () => {
   const pwrap = $('#tour-pbox');
   const twrap = $('#tour-therm');
   const dotsWrap = $('#ref-dots');
@@ -1300,7 +1269,7 @@ setupCallbacks[13] = () => {
 
   setRef(REFERENCES[4]); // room temp default
 
-  cleanupCallbacks[13] = () => { if (tourBox) { tourBox.destroy(); tourBox = null; } };
+  cleanupCallbacks[12] = () => { if (tourBox) { tourBox.destroy(); tourBox = null; } };
 };
 
 // ============================================================

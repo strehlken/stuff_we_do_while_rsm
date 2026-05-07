@@ -120,12 +120,35 @@ input[type="range"]::-moz-range-thumb{width:30px;height:30px;background:var(--ac
 .bucket-examples{margin-top:8px;font-size:15px;color:var(--muted)}
 .bucket-examples b{color:var(--text);font-weight:600}
 
-.particle-row{display:flex;align-items:center;gap:14px;padding:10px 14px;background:var(--soft);
-  border-radius:8px;margin-bottom:6px;font-size:17px;font-variant-numeric:tabular-nums}
-.particle-dot{width:18px;height:18px;border-radius:50%;background:var(--accent);flex-shrink:0}
-.particle-bar{height:8px;background:var(--accent);border-radius:4px;flex:1;max-width:200px;transition:width .3s}
+.wig-row{display:flex;align-items:center;gap:14px;padding:10px 14px;background:var(--soft);
+  border-radius:8px;margin-bottom:6px;font-size:16px;font-variant-numeric:tabular-nums}
+.wig-label{font-weight:600;min-width:84px;color:var(--text);font-size:15px}
+.wig-track{position:relative;flex:1;height:24px;background:rgba(0,0,0,0.05);
+  border-radius:12px;max-width:200px;overflow:hidden}
+.wig-dot{position:absolute;top:50%;left:50%;width:14px;height:14px;
+  background:var(--accent);border-radius:50%;will-change:transform;
+  transform:translate(-50%,-50%);box-shadow:0 1px 3px rgba(0,0,0,0.18)}
+.wig-val{font-size:22px;font-weight:700;color:var(--accent);
+  min-width:42px;text-align:center;font-variant-numeric:tabular-nums}
+.wig-bar{width:90px;flex-shrink:0;height:8px;background:rgba(0,0,0,0.08);
+  border-radius:4px;overflow:hidden}
+.wig-fill{height:100%;background:var(--accent);border-radius:4px;width:0%;
+  transition:width .25s ease}
+.wig-avg{background:var(--good-soft);border:1.5px solid var(--good);
+  margin-top:18px;padding:12px 14px}
+.wig-avg .wig-label{color:#0a6e51;text-transform:uppercase;letter-spacing:.06em;font-size:13px}
+.wig-avg .wig-dot,.wig-avg .wig-fill{background:var(--good)}
+.wig-avg .wig-val{color:var(--good)}
 .sum-line{font-size:18px;font-weight:600;text-align:center;margin:14px 0;
   padding:14px;background:var(--accent-soft);border-radius:10px;color:var(--accent-deep)}
+@media (max-width:520px){
+  .wig-row{gap:10px;padding:8px 10px}
+  .wig-label{min-width:62px;font-size:13px}
+  .wig-track{max-width:120px;height:22px}
+  .wig-dot{width:12px;height:12px}
+  .wig-val{font-size:18px;min-width:30px}
+  .wig-bar{width:60px}
+}
 
 .tour-layout{display:grid;grid-template-columns:auto 1fr;gap:18px}
 @media (max-width:620px){.tour-layout{grid-template-columns:1fr}}
@@ -437,26 +460,27 @@ input[type="range"]::-moz-range-thumb{width:30px;height:30px;background:var(--ac
     <div class="ch-num">Chapter 10 — taking the average</div>
     <h2 class="ch-title">One number for the whole crowd. Add them all up. Divide by how many.</h2>
     <div class="ch-body">
-      <p>Each particle is moving in some direction, but directions cancel out when you add them up — so what we average is how energetically each one is moving, regardless of where it's pointed. Here are 5 particles, each with its own wiggle level — a number from 1 to 10:</p>
+      <p>Each particle is moving in some direction, but directions cancel out when you add them up — so what we average is how energetically each one is moving, regardless of where it's pointed. Here are 5 particles, each with its own wiggle level — a number from 1 to 10. Watch them: a higher number means more back-and-forths per second.</p>
     </div>
     <div id="avg-particles">
-      <div class="particle-row"><div class="particle-dot"></div><span>Particle 1 — wiggle =</span><strong style="font-size:20px;color:var(--accent)" data-w="0">3</strong><div class="particle-bar" style="width:30%"></div></div>
-      <div class="particle-row"><div class="particle-dot"></div><span>Particle 2 — wiggle =</span><strong style="font-size:20px;color:var(--accent)" data-w="1">5</strong><div class="particle-bar" style="width:50%"></div></div>
-      <div class="particle-row"><div class="particle-dot"></div><span>Particle 3 — wiggle =</span><strong style="font-size:20px;color:var(--accent)" data-w="2">2</strong><div class="particle-bar" style="width:20%"></div></div>
-      <div class="particle-row"><div class="particle-dot"></div><span>Particle 4 — wiggle =</span><strong style="font-size:20px;color:var(--accent)" data-w="3">7</strong><div class="particle-bar" style="width:70%"></div></div>
-      <div class="particle-row"><div class="particle-dot"></div><span>Particle 5 — wiggle =</span><strong style="font-size:20px;color:var(--accent)" data-w="4">3</strong><div class="particle-bar" style="width:30%"></div></div>
+      <div class="wig-row" data-i="0"><div class="wig-label">Particle 1</div><div class="wig-track"><div class="wig-dot"></div></div><strong class="wig-val">3</strong><div class="wig-bar"><div class="wig-fill"></div></div></div>
+      <div class="wig-row" data-i="1"><div class="wig-label">Particle 2</div><div class="wig-track"><div class="wig-dot"></div></div><strong class="wig-val">5</strong><div class="wig-bar"><div class="wig-fill"></div></div></div>
+      <div class="wig-row" data-i="2"><div class="wig-label">Particle 3</div><div class="wig-track"><div class="wig-dot"></div></div><strong class="wig-val">2</strong><div class="wig-bar"><div class="wig-fill"></div></div></div>
+      <div class="wig-row" data-i="3"><div class="wig-label">Particle 4</div><div class="wig-track"><div class="wig-dot"></div></div><strong class="wig-val">7</strong><div class="wig-bar"><div class="wig-fill"></div></div></div>
+      <div class="wig-row" data-i="4"><div class="wig-label">Particle 5</div><div class="wig-track"><div class="wig-dot"></div></div><strong class="wig-val">3</strong><div class="wig-bar"><div class="wig-fill"></div></div></div>
     </div>
     <div class="sum-line">
       <strong>Add them up:</strong> 3 + 5 + 2 + 7 + 3 = <strong>20</strong><br>
-      <strong>Divide by 5:</strong> 20 ÷ 5 = <strong style="font-size:24px">4</strong> ← this is the average wiggle. <em>This is the temperature.</em>
+      <strong>Divide by 5:</strong> 20 ÷ 5 = <strong style="font-size:24px">4.0</strong> ← this is the average wiggle. <em>This is the temperature.</em>
     </div>
+    <div class="wig-row wig-avg" data-i="avg"><div class="wig-label">Average</div><div class="wig-track"><div class="wig-dot"></div></div><strong class="wig-val">4.0</strong><div class="wig-bar"><div class="wig-fill"></div></div></div>
     <div class="control-row">
       <label>cooler</label>
       <input type="range" id="avg-slider" min="0" max="100" value="40">
       <label>hotter</label>
     </div>
     <div class="ch-body">
-      <p>Drag the slider. Every particle's wiggle goes up. The average climbs. <strong>That climbing average is what a thermometer reads.</strong></p>
+      <p>Drag the slider. Every particle's wiggle goes up. The green average particle climbs along with them. <strong>That climbing average is what a thermometer reads.</strong></p>
       <p>Mercury doesn't measure individual atoms — there are billions of billions of them. It measures the <em>collective effect</em> of their average wiggle: the column rising. That's the trick.</p>
     </div>
   </section>
@@ -1136,28 +1160,69 @@ setupCallbacks[8] = () => {
   cleanupCallbacks[8] = () => { if (connBox) { connBox.destroy(); connBox = null; } };
 };
 
-// CH 10 — average
+// CH 10 — taking the average (animated wiggling particles + average particle)
+let avgRafId = null;
 setupCallbacks[9] = () => {
   const slider = freshen('#avg-slider');
   const baseValues = [3, 5, 2, 7, 3];
-  const valueEls = $$('#avg-particles strong');
-  const barEls = $$('#avg-particles .particle-bar');
   const sumLine = $('.sum-line');
+  const particleRows = $$('#avg-particles .wig-row');
+  const avgRow = $('.wig-row.wig-avg');
+  const allRows = [...particleRows, avgRow];
+
+  // Per-row animation state: current wiggle level and accumulated phase
+  const state = allRows.map(() => ({ wiggle: 1, phase: Math.random() * Math.PI * 2 }));
+
   function update() {
     const factor = 0.5 + parseInt(slider.value) / 50;
-    const newVals = baseValues.map(v => Math.max(1, Math.round(v * factor)));
-    newVals.forEach((v, i) => {
-      valueEls[i].textContent = v;
-      barEls[i].style.width = Math.min(100, v * 10) + '%';
+    const vals = baseValues.map(v => Math.max(1, Math.round(v * factor)));
+    const sum = vals.reduce((a, b) => a + b, 0);
+    const avg = sum / vals.length;
+
+    // Bar normalization: tallest bar (max wiggle in the set) is 100%
+    const maxV = Math.max(...vals, avg);
+
+    vals.forEach((v, i) => {
+      state[i].wiggle = v;
+      particleRows[i].querySelector('.wig-val').textContent = v;
+      particleRows[i].querySelector('.wig-fill').style.width = (v / maxV * 100) + '%';
     });
-    const sum = newVals.reduce((a,b) => a+b, 0);
-    const avg = (sum / 5).toFixed(1);
-    sumLine.innerHTML = `<strong>Add them up:</strong> ${newVals.join(' + ')} = <strong>${sum}</strong><br>` +
-      `<strong>Divide by 5:</strong> ${sum} ÷ 5 = <strong style="font-size:24px">${avg}</strong> ← average wiggle = temperature`;
+    state[5].wiggle = avg;
+    avgRow.querySelector('.wig-val').textContent = avg.toFixed(1);
+    avgRow.querySelector('.wig-fill').style.width = (avg / maxV * 100) + '%';
+
+    sumLine.innerHTML = `<strong>Add them up:</strong> ${vals.join(' + ')} = <strong>${sum}</strong><br>` +
+      `<strong>Divide by 5:</strong> ${sum} ÷ 5 = <strong style="font-size:24px">${avg.toFixed(1)}</strong> ← average wiggle = temperature`;
   }
+
+  // Animation loop: phase accumulates so a freq change doesn't snap the dot's position
+  let lastT = null;
+  function animate(now) {
+    const dt = lastT === null ? 0 : Math.min((now - lastT) / 1000, 0.1);
+    lastT = now;
+    allRows.forEach((row, i) => {
+      const dot = row.querySelector('.wig-dot');
+      const track = dot.parentElement;
+      const trackW = track.clientWidth;
+      if (trackW <= 14) return; // track not laid out yet; skip this row this frame
+      // wiggle level = back-and-forths per second; one full cycle = 2π in phase
+      state[i].phase += 2 * Math.PI * state[i].wiggle * 0.6 * dt;
+      const amplitude = (trackW - 14) / 2 - 2;
+      const x = Math.sin(state[i].phase) * amplitude;
+      dot.style.transform = `translate(calc(-50% + ${x}px), -50%)`;
+    });
+    avgRafId = requestAnimationFrame(animate);
+  }
+
   slider.addEventListener('input', update);
   slider.value = 40; update();
-  cleanupCallbacks[9] = () => {};
+  avgRafId = requestAnimationFrame(animate);
+
+  cleanupCallbacks[9] = () => {
+    if (avgRafId) cancelAnimationFrame(avgRafId);
+    avgRafId = null;
+    lastT = null;
+  };
 };
 
 // CH 12 — Kelvin
